@@ -2,7 +2,6 @@ package com.hy.traffic;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
@@ -36,12 +35,17 @@ public class TrafficManagerApplication extends SpringBootServletInitializer {
         page.setDialectType("mysql");
         return page;
     }
+
+    /**
+     *   springboot 上传文件
+     */
+    @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //单个文件最大
-        factory.setMaxFileSize(DataSize.parse("1024000KB")); //KB,MB
+        factory.setMaxFileSize(DataSize.parse("204800KB")); //限制200MB
         /// 设置总上传数据总大小
-        factory.setMaxRequestSize(DataSize.parse("2048000KB"));
+        factory.setMaxRequestSize(DataSize.parse("1024000KB"));
         return factory.createMultipartConfig();
     }
 
