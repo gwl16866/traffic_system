@@ -60,6 +60,18 @@ public class TeachinfoController {
         return teachinfoService.queryAllQuestion();
     }
 
+
+    /**
+     * 查询大纲下所有题目
+     * @return
+     */
+    @RequestMapping("queryAllQuestionById")
+    public List<QuestionsDetail> queryAllQuestion(Integer id){
+        return teachinfoService.queryAllQuestionById(id);
+    }
+
+
+
     /**
      * 答案
      * @param id
@@ -159,6 +171,19 @@ public class TeachinfoController {
     public boolean addLessionsJie(@RequestBody AddLessions addLessions){
         return teachinfoService.addLessionsJie(addLessions);
     }
+
+
+    /**
+     * 添加小节
+     * @param addLittleLes
+     * @return
+     */
+    @RequestMapping("addLittleLes")
+    public boolean addLittleLes(@RequestBody AddLittleLes addLittleLes){
+        return teachinfoService.addLittleLes(addLittleLes);
+    }
+
+
 
 
 

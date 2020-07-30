@@ -66,6 +66,11 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
+    public List<QuestionsDetail> queryAllQuestionById(Integer id) {
+        return mapper.queryAllQuestionById(id);
+    }
+
+    @Override
     public Question queryOneAnswer(Integer id) {
         return mapper.queryOneAnswer(id);
     }
@@ -137,6 +142,13 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         Integer j = mapper.maxCid();
         //添加小节
         mapper.addLession(add.getXiaojie(),j.toString(),add.getShipin(),add.getDagang());
+        return true;
+    }
+
+    @Override
+    public boolean addLittleLes(AddLittleLes add) {
+        //添加小节
+        mapper.addLession(add.getXj(),add.getDa(),add.getSp(),add.getBig());
         return true;
     }
 

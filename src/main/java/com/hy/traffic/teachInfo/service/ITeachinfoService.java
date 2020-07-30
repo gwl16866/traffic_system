@@ -22,10 +22,12 @@ public interface ITeachinfoService extends IService<Teachinfo> {
   public List<ClassDetail> queryZhangByClass(Integer id);
   public List<ClassDetail> queryJieByClass(Integer id);
   public List<QuestionsDetail> queryAllQuestion();
+  public List<QuestionsDetail> queryAllQuestionById(Integer id);
   public Question queryOneAnswer(Integer id);
   public boolean addQuesObject(AddQuesObject add);
   public boolean addLession(AddLession add);
   public boolean addLessionsJie(AddLessions add);
+  public boolean addLittleLes(AddLittleLes add);
 
 
 

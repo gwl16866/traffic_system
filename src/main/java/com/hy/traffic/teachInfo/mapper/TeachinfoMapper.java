@@ -1,11 +1,10 @@
 package com.hy.traffic.teachInfo.mapper;
 
-import com.hy.traffic.teachInfo.entity.*;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.hy.traffic.teachInfo.entity.*;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectKey;
 
 import java.util.List;
 
@@ -48,6 +47,13 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      */
     @Select("SELECT q.id,q.questionTitle,c.oneTitle,q.questionType FROM questionsmanager q,classdetails c WHERE q.`ofTitleId` = c.`id`")
     public List<QuestionsDetail> queryAllQuestion();
+
+    /**
+     * 查询大纲下所有题目
+     * @return
+     */
+    @Select("SELECT q.id,q.questionTitle,c.oneTitle,q.questionType FROM questionsmanager q,classdetails c WHERE oftitleId IN(SELECT id FROM classdetails WHERE classdetails=#{id}) and q.`ofTitleId` = c.`id`")
+    public List<QuestionsDetail> queryAllQuestionById(Integer id);
 
     /**
      * 查询答案
