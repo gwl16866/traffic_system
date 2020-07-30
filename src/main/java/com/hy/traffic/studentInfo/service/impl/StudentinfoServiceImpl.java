@@ -3,7 +3,6 @@ package com.hy.traffic.studentInfo.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hy.traffic.studentInfo.entity.ExportFile;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.mapper.StudentinfoMapper;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
@@ -61,6 +60,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
      **/
     @RequestMapping("insterStudent")
     public ReturnJson insterStudent(Studentinfo studentinfo){
+
         DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         if(!StringUtils.isEmpty(studentinfo.getBusCarefulTimes())){
             studentinfo.setBusCarefulTime(LocalDateTime.parse(studentinfo.getBusCarefulTimes().replace("T"," "),dt));
@@ -75,6 +75,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         studentinfo.setCompanyName("枣阳市光武石化运输有限公司");
         studentinfo.setCreateTime(LocalDateTime.now());
         studentinfo.setHeadImgStatus(4);
+        studentinfo.setPassword(studentinfo.getCardId().substring(12));
         Integer boo = studentinfoMapper.insert(studentinfo);
         if( boo>0 ){
             return new ReturnJson(200,"添加成功",null);
@@ -198,4 +199,14 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         row0.createCell(4).setCellValue("联系地址");
         return workbook;
     }
+
+
+    public Studentinfo selectStudentInfo(String cardId,String password){
+        return  studentinfoMapper.selectStudentInfo(cardId,password);
+    }
+
+    public void updatePassword(Integer id,String password){
+         studentinfoMapper.updatePassword(id, password);
+    }
+
 }

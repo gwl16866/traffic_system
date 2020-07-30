@@ -1,20 +1,12 @@
 package com.hy.traffic.studentInfo.mapper;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hy.traffic.saftyEdu.entity.Saftyedu;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.provider.StudentinfoProvider;
 import com.hy.traffic.studentInfo.utils.Provider;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -49,4 +41,11 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     @UpdateProvider(type = Provider.class , method = "updateOneStudent")
     public int updateOneStudent(Integer id,Integer status);
 
+
+    //登录
+    @Select("select * from studentinfo where cardId=${cardId} and password=${password}")
+    public Studentinfo selectStudentInfo(String cardId,String password);
+
+    @Update("update studentinfo set password=${password} where id=#{id}")
+    public void updatePassword(Integer id,String password);
 }

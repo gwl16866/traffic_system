@@ -35,6 +35,9 @@ public class Studentinfo implements Serializable {
     @TableField("headimg")
     private String headImg;
 
+    @TableField("password")
+    private String password;
+
     @TableField("companyname")
     private String companyName;
 
