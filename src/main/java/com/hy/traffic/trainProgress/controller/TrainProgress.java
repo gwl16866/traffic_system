@@ -46,7 +46,15 @@ public class TrainProgress {
         Integer bfb=0;
         for (Teachinfo teachinfo : list) {
             String student=teachinfo.getStudent();
-             allproper=student.split(",").length;
+            if(student=="" || student==null){
+                allproper=0;
+            }else
+             if(student.indexOf(",")==-1){
+                 allproper=1;
+             }else {
+                 allproper=student.split(",").length;
+             }
+
             teachinfo.setAllproper(allproper);
 
             ok=tranProgressImp.selectok(student,2,teachinfo.getId());
