@@ -3,10 +3,7 @@ package com.hy.traffic.saftyEdu.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.hy.traffic.saftyEdu.entity.Bchar;
-import com.hy.traffic.saftyEdu.entity.PageJson;
-import com.hy.traffic.saftyEdu.entity.Saftyedu;
-import com.hy.traffic.saftyEdu.entity.Tree;
+import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.mapper.SaftyeduMapper;
 import com.hy.traffic.saftyEdu.service.ISaftyeduService;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
@@ -77,6 +74,14 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         saftyeduMapper.batchAddStudent(saftyid,studentid);
     }
 
+    public void addLook(Integer classid,Integer studentid,Integer saftyeduid){
+        saftyeduMapper.addLook(classid,studentid,saftyeduid);
+    };
+
+    public void addLession(Integer id,Integer classid){
+        saftyeduMapper.addLession(id,classid);
+    }
+
     @Override
     public List<Studentinfo> selectAllStu() {
        return saftyeduMapper.selectAllStu();
@@ -88,8 +93,8 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
     };
 
     @Override
-    public void addSaftyEdu(String theme, String startTime, String endTime, String lession, String manager, String testPeople, Integer learnType, String learnTime){
-         saftyeduMapper.addSaftyEdu(theme, startTime, endTime, lession, manager,testPeople, learnType, learnTime);
+    public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople, Integer learnType, String learnTime,Integer passscore){
+         saftyeduMapper.addSaftyEdu(theme, startTime, endTime,  manager,testPeople, learnType, learnTime,passscore);
     };
 
     @Override
@@ -104,7 +109,7 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
 
     @Override
-    public Saftyedu selectlession(Integer id){
+    public List<saftyclass> selectlession(Integer id){
       return   saftyeduMapper.selectlession(id);
     }
     @Override

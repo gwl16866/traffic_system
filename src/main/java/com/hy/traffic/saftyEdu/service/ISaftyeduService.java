@@ -3,13 +3,12 @@ package com.hy.traffic.saftyEdu.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.hy.traffic.saftyEdu.entity.PageJson;
 import com.hy.traffic.saftyEdu.entity.Saftyedu;
-
-import java.text.ParseException;
-import com.hy.traffic.saftyEdu.entity.Saftyedu;
 import com.hy.traffic.saftyEdu.entity.Tree;
+import com.hy.traffic.saftyEdu.entity.saftyclass;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.ClassDetail;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -37,11 +36,13 @@ public interface ISaftyeduService extends IService<Saftyedu> {
     public void deleteStudent(Integer studentid,Integer saftyid);
     public List<Studentinfo> selectAllStudent(Integer saftyid);
     public void batchAddStudent(Integer saftyid,Integer studentid);
+    public void addLook(Integer classid,Integer studentid,Integer saftyeduid);
+    public void addLession(Integer id,Integer classid);
     public List<Studentinfo> selectAllStu();
     public List<Tree> queryclassDetail();
-    public void addSaftyEdu(String theme, String startTime, String endTime, String lession, String manager,String testPeople, Integer learnType , String learnTime);
+    public void addSaftyEdu(String theme, String startTime, String endTime, String manager,String testPeople, Integer learnType , String learnTime,Integer passscore);
     public Integer selectMaxId();
     public void deleteSaftyedu(Integer id);
-    public Saftyedu selectlession(Integer id);
+    public List<saftyclass> selectlession(Integer id);
     public List<ClassDetail> classDetailList(String id);
 }

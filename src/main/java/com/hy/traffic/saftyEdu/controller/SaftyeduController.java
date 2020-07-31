@@ -3,10 +3,7 @@ package com.hy.traffic.saftyEdu.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hy.traffic.saftyEdu.ResultData;
-import com.hy.traffic.saftyEdu.entity.PageJson;
-import com.hy.traffic.saftyEdu.entity.Saftyedu;
-import com.hy.traffic.saftyEdu.entity.Saftyedutwo;
-import com.hy.traffic.saftyEdu.entity.Tree;
+import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.mapper.SaftyeduMapper;
 import com.hy.traffic.saftyEdu.service.ISaftyeduService;
 import com.hy.traffic.saftyEdu.service.impl.SaftyeduServiceImpl;
@@ -48,6 +45,15 @@ public class SaftyeduController {
     SaftyeduServiceImpl saftyeduService;
     @Autowired
     TeachinfoServiceImpl teachinfoService;
+
+    @Autowired
+    private ISaftyeduService iSaftyeduService;
+
+    @Autowired
+    private StudentinfoMapper studentinfoMapper;
+
+    @Autowired
+    private SaftyeduMapper saftyeduMapper;
 
     //查询
     @CrossOrigin
@@ -148,35 +154,31 @@ public class SaftyeduController {
     @RequestMapping("/addSaftyEdu")
     public Integer addSaftyEdu(@RequestBody Saftyedutwo addEdu) {
         try {
+            //添加培训
+            saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore());
+            //查询最大Id(培训id)
+            Integer maxId = saftyeduService.selectMaxId();
             StringBuilder sr = new StringBuilder();
             for (int i = 0; i < addEdu.getLession().length; i++) {
-                sr.append(addEdu.getLession()[i]);
-                if (i < addEdu.getLession().length - 1) {
-                    sr.append(",");
-                }
+                //添加课程
+                saftyeduService.addLession(maxId,addEdu.getLession()[i]);
             }
-            //添加培训
-            saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), sr.toString(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime());
-            //查询最大Id
-            Integer maxId = saftyeduService.selectMaxId();
+
             //添加参训人员
             for (int i = 0; i < addEdu.getStudent().length; i++) {
                 saftyeduService.batchAddStudent(maxId, addEdu.getStudent()[i]);
+                //添加学生课程
+                for (int j = 0; j <addEdu.getLession().length ; j++) {
+                    saftyeduService.addLook(addEdu.getLession()[j],addEdu.getStudent()[i],maxId);
+                }
             }
+
         } catch (Exception e) {
             return 0;
         }
         return 1;
     }
 
-    @Autowired
-    private ISaftyeduService iSaftyeduService;
-
-    @Autowired
-    private StudentinfoMapper studentinfoMapper;
-
-    @Autowired
-    private SaftyeduMapper saftyeduMapper;
 
     //默认查询所有并且分页
     @CrossOrigin
@@ -481,8 +483,17 @@ System.out.println(said);
     @CrossOrigin
     @RequestMapping("/classDetailList")
     public List<ClassDetail> classDetailList(Integer id) {
-        Saftyedu saftyedu = saftyeduService.selectlession(id);
-        List<ClassDetail> classDetailList = saftyeduService.classDetailList(saftyedu.getLession());
+        //根据主题id查询出课程id
+        List<saftyclass> saftyclass= saftyeduService.selectlession(id);
+        StringBuilder sr=new StringBuilder();
+        for (int i = 0; i < saftyclass.size(); i++) {
+            sr.append(saftyclass.get(i).getClassId());
+            if(i<saftyclass.size()-1){
+                sr.append(",");
+            }
+        }
+        //查询课程
+        List<ClassDetail> classDetailList = saftyeduService.classDetailList(sr.toString());
         return classDetailList;
     }
 }
