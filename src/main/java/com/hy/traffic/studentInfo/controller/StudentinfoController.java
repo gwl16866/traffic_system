@@ -154,10 +154,10 @@ public class StudentinfoController {
 
     //修改密码
     @RequestMapping("updatePassword")
-    public Info updatePassword(Integer id, String password) {
+    public Info updatePassword(Integer carId, String password) {
         Info info = new Info();
         try {
-            studentinfoService.updatePassword(id, password);
+            studentinfoService.updatePassword(carId, password);
             info.setCode(200);
             info.setMessage("修改成功");
         }catch (Exception e){

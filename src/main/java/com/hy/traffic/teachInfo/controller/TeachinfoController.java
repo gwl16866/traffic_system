@@ -130,7 +130,7 @@ public class TeachinfoController {
              req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File("C:\\apache-tomcat-8.0.35\\webapps\\ROOT\\imgs");
+            File files =new File(req + "imgs/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -181,6 +181,17 @@ public class TeachinfoController {
     @RequestMapping("addLittleLes")
     public boolean addLittleLes(@RequestBody AddLittleLes addLittleLes){
         return teachinfoService.addLittleLes(addLittleLes);
+    }
+
+
+    /**
+     * 查询培训列表
+     * @param carId
+     * @return
+     */
+    @RequestMapping("queryTrainList")
+    public List<OnlineTrain> queryTrainList(String carId){
+       return teachinfoService.queryOnlineTrainDetails(carId);
     }
 
 

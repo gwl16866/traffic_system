@@ -60,7 +60,7 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      * @param id
      * @return
      */
-    @Select("SELECT q.`questionTitle`,q.`options`,a.`answer`,a.`analyzes` FROM answer a,questionsmanager q WHERE a.`ofQuestionId`=q.`id` and q.id=#{id}")
+    @Select("SELECT q.`questionTitle`,q.`options`,q.`answer`,q.`analyzes` FROM questionsmanager q WHERE q.id=#{id}")
     public Question queryOneAnswer(Integer id);
 
     /**
@@ -137,6 +137,43 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      */
     @Select("select max(id) from teachinfo")
     public Integer maxTid();
+
+
+    /**
+     * 查询培训列表  根据身份证id
+     * @param id
+     * @return
+     */
+    @Select("SELECT s.`id`,s.`theme` FROM  saftyedu s,saftydustudentinfo si,studentinfo stu WHERE s.`id`=si.`saftyId` AND stu.`id`=si.`stuId` AND stu.`cardId`=#{id}")
+    public List<SaftyInfos> queryTrainList(String id);
+
+    /**
+     * 根据身份证查id
+     * @param carId
+     * @return
+     */
+    @Select("select id from studentinfo where cardid = #{carId}")
+    public Integer queryIdByCarId(String carId);
+
+    /**
+     * 查询该培训主题下某个学生所有要看的视频总数
+     * @param sid
+     * @param stuId
+     * @return
+     */
+    @Select("SELECT COUNT(id) FROM lookvediodetails WHERE saftyeduid=#{sid} AND studentid=#{stuId}")
+    public Integer queryAllSaftyStuVedioCounts(Integer sid,Integer stuId);
+
+
+    /**
+     * 查询该培训主题下某个学生所有要看的视频 已完成数
+     * @param sid
+     * @param stuId
+     * @return
+     */
+    @Select("SELECT COUNT(id) FROM lookvediodetails WHERE saftyeduid=#{sid} AND studentid=#{stuId} AND STATUS=2")
+    public Integer queryOkSaftyStuVedioCounts(Integer sid,Integer stuId);
+
 
 
 

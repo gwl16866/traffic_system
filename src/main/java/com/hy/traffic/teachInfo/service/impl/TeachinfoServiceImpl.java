@@ -1,13 +1,16 @@
 package com.hy.traffic.teachInfo.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -150,6 +153,31 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         //添加小节
         mapper.addLession(add.getXj(),add.getDa(),add.getSp(),add.getBig());
         return true;
+    }
+
+    @Override
+    public List<OnlineTrain> queryOnlineTrainDetails(String cardId) {
+       List<SaftyInfos> saftyInfos= mapper.queryTrainList(cardId);
+       //查询身份证
+       Integer id = mapper.queryIdByCarId(cardId);
+
+        List<OnlineTrain> list = new ArrayList<>();
+
+        for (int i = 0; i < saftyInfos.size(); i++) {
+            OnlineTrain onlineTrain = new OnlineTrain();
+            onlineTrain.setId(saftyInfos.get(i).getId());
+            onlineTrain.setTitle(saftyInfos.get(i).getTheme());
+            //总数
+            Integer counts=mapper.queryAllSaftyStuVedioCounts(saftyInfos.get(i).getId(),id);
+            Integer okCounts=mapper.queryOkSaftyStuVedioCounts(saftyInfos.get(i).getId(),id);
+            Integer bili = okCounts*100/counts;
+            DecimalFormat f = new DecimalFormat("0");
+            f.setRoundingMode(RoundingMode.HALF_UP);
+
+            onlineTrain.setStudyDetail(f.format(bili)+"%");
+            list.add(onlineTrain);
+        }
+        return list;
     }
 
 
