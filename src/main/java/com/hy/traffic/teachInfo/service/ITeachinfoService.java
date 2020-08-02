@@ -29,6 +29,12 @@ public interface ITeachinfoService extends IService<Teachinfo> {
   public boolean addLessionsJie(AddLessions add);
   public boolean addLittleLes(AddLittleLes add);
   public List<OnlineTrain> queryOnlineTrainDetails(String cardId);
+  public List<TrainVedio> queryVedioByTrainId(Integer trainId);
+  public List<TrainRecord> queryTrainRecord(String carId);
+  public StudentInfos queryStuInfor(String carId);
+  public Integer updateVedioStatus(Integer trainId,String cardId,Integer vedioId);
+  public List<examQuestion> queryExamQuestion(Integer trainId);
+  public Integer testScore(ExamObject object);
 
 
 

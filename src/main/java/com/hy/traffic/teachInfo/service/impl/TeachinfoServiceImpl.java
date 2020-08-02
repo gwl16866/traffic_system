@@ -173,12 +173,92 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
             Integer bili = okCounts*100/counts;
             DecimalFormat f = new DecimalFormat("0");
             f.setRoundingMode(RoundingMode.HALF_UP);
-
             onlineTrain.setStudyDetail(f.format(bili)+"%");
             list.add(onlineTrain);
         }
         return list;
     }
 
+    @Override
+    public List<TrainVedio> queryVedioByTrainId(Integer trainId) {
+        return mapper.queryVedioByTrainId(trainId);
+    }
 
+    @Override
+    public List<TrainRecord> queryTrainRecord(String carId) {
+        //学生id
+        Integer id =mapper.queryIdByCarId(carId);
+        //培训列表
+        List<TrainRecord> recordList =  mapper.queryTrainRecord(id);
+        for (int i = 0; i < recordList.size(); i++) {
+            List<AnswerRecord> answerList =  mapper.queryAnswerRecord(recordList.get(i).getId(),id);
+            recordList.get(i).setScore(answerList);
+        }
+        return recordList;
+    }
+
+    @Override
+    public StudentInfos queryStuInfor(String carId) {
+        return mapper.queryStuInfor(carId);
+    }
+
+    @Override
+    public Integer updateVedioStatus(Integer trainId, String cardId, Integer vedioId) {
+        Integer id = mapper.queryIdByCarId(cardId);
+        Integer ids = mapper.updateVedioStatus(trainId,id,vedioId);
+        return ids;
+    }
+
+    @Override
+    public List<examQuestion> queryExamQuestion(Integer trainId) {
+        return mapper.queryExamQuestion(trainId);
+    }
+
+    @Override
+    public Integer testScore(ExamObject object) {
+        //提交的答案  和  id
+        List<ReceiveQuestionList> questions = object.getList();
+        List<AnswerFiveObj> answerList = new ArrayList<>();
+        for (int i = 0; i < questions.size(); i++) {
+            //答案
+          String answer = mapper.queryTrueAnswer(questions.get(i).getQuestionId());
+            //new 出每条记录
+            AnswerFiveObj fiveObj=new AnswerFiveObj();
+            fiveObj.setQuestionId(questions.get(i).getQuestionId());
+            fiveObj.setAnswer(questions.get(i).getAnswer());
+            fiveObj.setTrueAnswer(answer);
+          if(questions.get(i).getAnswer().equals(answer)){
+              fiveObj.setScore(10);
+          }else{
+              fiveObj.setScore(0);
+          }
+            answerList.add(fiveObj);
+        }
+        Integer s=0;
+        for (int j = 0; j < answerList.size(); j++) {
+            s=s+answerList.get(j).getScore();
+        }
+        // 根据培训id查询本次培训过关分数
+        Integer sc = mapper.queryScore(object.getReceiveScoreRecord().getSaftyId());
+        Integer status=1;
+        if(s>sc){
+            status =2;
+        }
+        //插入记录  再插入详细
+        Integer re = mapper.inserExamRecord(object.getReceiveScoreRecord().getSaftyId(),
+                object.getReceiveScoreRecord().getStuId(),
+                object.getReceiveScoreRecord().getStartTime(),
+                object.getReceiveScoreRecord().getEndTime(),status,s);
+        Integer id = mapper.queryMaxExamId();
+        Integer re2=0;
+        for (int a = 0; a < answerList.size(); a++) {
+             re2 = mapper.insertExamDetail(answerList.get(a).getQuestionId(),
+                    answerList.get(a).getAnswer(),id,answerList.get(a).getTrueAnswer());
+        }
+        if(re>0 && re2>0){
+            return s;
+        }else {
+            return null;
+        }
+    }
 }
