@@ -5,11 +5,11 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-public class QuestionsDetail implements Serializable {
+public class examQuestion implements Serializable {
+
     private Integer id;
-    private String questionTitle;
-    private String oneTitle;
+    private String  questionTitle;
     private String questionType;
-    private String answer;
+    private String options;
 
 }

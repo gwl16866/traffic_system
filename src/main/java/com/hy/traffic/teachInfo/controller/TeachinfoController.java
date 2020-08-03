@@ -130,7 +130,7 @@ public class TeachinfoController {
              req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File("C:\\apache-tomcat-8.0.35\\webapps\\ROOT\\imgs");
+            File files =new File(req + "imgs/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -181,6 +181,86 @@ public class TeachinfoController {
     @RequestMapping("addLittleLes")
     public boolean addLittleLes(@RequestBody AddLittleLes addLittleLes){
         return teachinfoService.addLittleLes(addLittleLes);
+    }
+
+
+    /**
+     * 查询培训列表
+     * @param cardId
+     * @return
+     */
+    @RequestMapping("queryTrainList")
+    public List<OnlineTrain> queryTrainList(String cardId){
+       return teachinfoService.queryOnlineTrainDetails(cardId);
+    }
+
+    /**
+     * 根据培训id查旗下视频
+     * @param trainId
+     * @return
+     */
+    @RequestMapping("queryVedioByTrainId")
+    public List<TrainVedio> queryVedioByTrainId(Integer trainId){
+        return teachinfoService.queryVedioByTrainId(trainId);
+    }
+
+    /**
+     * 根据身份证查他培训记录
+     * @param cardId
+     * @return
+     */
+    @RequestMapping("queryTrainRecord")
+    public List<TrainRecord> queryTrainRecord(String cardId, String year){
+        return teachinfoService.queryTrainRecord(cardId,year);
+    }
+
+
+    /**
+     * 返回个人信息
+     * @param cardId
+     * @return
+     */
+    @RequestMapping("oneInfo")
+    public StudentInfos oneInfo(String cardId){
+        return teachinfoService.queryStuInfor(cardId);
+    }
+
+    /**
+     * 修改 视频状态
+     * @param trainId
+     * @param cardId
+     * @param vedioId
+     * @return
+     */
+    @RequestMapping("updateVedioStatus")
+    public Integer updateVedioStatus(Integer trainId,String cardId,Integer vedioId){
+        Integer ok = teachinfoService.updateVedioStatus(trainId,cardId,vedioId);
+        System.out.println(ok);
+        if (null != ok && ok >0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     * 查询题目根据培训id
+     * @param trainId
+     * @return
+     */
+    @RequestMapping("queryExamQuestion")
+    public List<examQuestion> queryExamQuestion(Integer trainId){
+        return teachinfoService.queryExamQuestion(trainId);
+    }
+
+    /**
+     * 评分
+     * @param examObject
+     * @return
+     */
+    @RequestMapping("testScore")
+    public Integer testScore(@RequestBody ExamObject examObject){
+      return   teachinfoService.testScore(examObject);
     }
 
 
