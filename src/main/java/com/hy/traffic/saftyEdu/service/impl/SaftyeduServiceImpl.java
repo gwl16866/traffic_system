@@ -73,6 +73,14 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         saftyeduMapper.batchAddStudent(saftyid,studentid);
     }
 
+    public void addLook(Integer classid,Integer studentid,Integer saftyeduid){
+        saftyeduMapper.addLook(classid,studentid,saftyeduid);
+    };
+
+    public void addLession(Integer id,Integer classid){
+        saftyeduMapper.addLession(id,classid);
+    }
+
     @Override
     public List<Studentinfo> selectAllStu() {
        return saftyeduMapper.selectAllStu();
@@ -84,8 +92,8 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
     };
 
     @Override
-    public void addSaftyEdu(String theme, String startTime, String endTime, String lession, String manager, String testPeople, Integer learnType, String learnTime){
-         saftyeduMapper.addSaftyEdu(theme, startTime, endTime, lession, manager,testPeople, learnType, learnTime);
+    public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople, Integer learnType, String learnTime,Integer passscore){
+         saftyeduMapper.addSaftyEdu(theme, startTime, endTime,  manager,testPeople, learnType, learnTime,passscore);
     };
 
     @Override
@@ -100,7 +108,7 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
 
     @Override
-    public Saftyedu selectlession(Integer id){
+    public List<saftyclass> selectlession(Integer id){
       return   saftyeduMapper.selectlession(id);
     }
     @Override

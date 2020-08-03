@@ -46,4 +46,6 @@ public class Saftyedutwo implements Serializable {
     private String trainTeacher;
 
 private String learnTime;
+
+private Integer passscore;
 }

@@ -1,8 +1,8 @@
 package com.hy.traffic.trainProgress.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.hy.traffic.trainProgress.entity.StudentInfoEntity;
 import com.hy.traffic.trainProgress.entity.Teachinfo;
+import com.hy.traffic.trainProgress.entity.Vedio;
 import com.hy.traffic.trainProgress.mapper.TrainProgressMapper;
 import com.hy.traffic.trainProgress.service.ITranProgressService;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -16,8 +16,6 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -27,78 +25,41 @@ public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo>
     private TrainProgressMapper trainProgressMapper;
 
 
-
-    public int selectok(String student,Integer completion,Integer saftyid){
-     return    trainProgressMapper.selectok(student,completion,saftyid);
-    }
-
-    //查询安全教育的所有年份
-    public List<Teachinfo> selectYear(){
-       return trainProgressMapper.selectYear();
-    };
-
-    //  根据年份及月份查询条件内的数据
-    public List<Teachinfo> selectByTime(String Year,String Month){
+    /**
+     * @Author zhangduo
+     * @Description //TODO 查询所有主体信息
+     * @Date 10:08 2020/8/1
+     * @Param [YearMonth]
+     * @return java.util.List<com.hy.traffic.trainProgress.entity.Teachinfo>
+     **/
+    public List<Teachinfo> queryThemTable(String Year,String Month){
         if(!StringUtils.isEmpty(Year) && !StringUtils.isEmpty(Month)){
             if(Month.length()<=1){
                 Month="0"+Month;
             }
         }
-        return trainProgressMapper.selectByTime(Year+"-"+Month);
-    };
+        return trainProgressMapper.queryThemTable(Year+"-"+Month);
+    }
 
-    //    进度
-//    查询某一年月里产与培训的总人数
-    public Integer allNum(String Year,String Month){
-        String yearMonth=null;
+    /**
+     * @Author zhangduo
+     * @Description //TODO 查询当前年当前月的总完成数/已完成数
+     * @Date 11:48 2020/8/1
+     * @Param []
+     * @return java.util.List<com.hy.traffic.trainProgress.entity.Teachinfo>
+     **/
+    public Teachinfo queryAllProperAndOkProper(String Year,String Month){
         if(!StringUtils.isEmpty(Year) && !StringUtils.isEmpty(Month)){
             if(Month.length()<=1){
-                Month="-0"+Month;
-                yearMonth=Year+Month;
+                Month="0"+Month;
             }
-        }else {
-            yearMonth= LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
         }
-        return trainProgressMapper.allNum(yearMonth);
-    };
-
-    //    查询某一年月里完成培训的人数
-    public Integer successNum(String Year,String Month){
-        String yearMonth=null;
-        if(!StringUtils.isEmpty(Year) && !StringUtils.isEmpty(Month)){
-            if(Month.length()<=1){
-                Month="-0"+Month;
-                yearMonth=Year+Month;
-            }
-        }else {
-            yearMonth= LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM"));
-        }
-        return trainProgressMapper.successNum( yearMonth);
-    };
-
-    //     查询某一年月中某一培训主题的总人数
-    public String themeAllNum(String YearMonth,String theme){
-        return trainProgressMapper.themeAllNum(YearMonth,theme);
-    };
-
-    //     查询某一年月中某一培训主题的完成培训的人数
-    public String successThemeNum(String YearMonth,String theme){
-        return trainProgressMapper.successThemeNum(YearMonth,theme);
-    };
-
-    //    参训学员
-    //    查询查询学员的信息
-    public List<StudentInfoEntity> SelectCXInfo(Integer saftyid){
-        return trainProgressMapper.SelectCXInfo(saftyid);
-    };
-
-    //    模糊查询学员的信息
-    public List<StudentInfoEntity> LikeCXInfo(String selects,Integer saftyid,String inputs,Integer oneStatus){
-        return trainProgressMapper.LikeCXInfo(selects,saftyid,inputs,oneStatus);
-    };
+        Teachinfo teachinfo = trainProgressMapper.queryAllProperAndOkProper(Year+"-"+Month);
+        return teachinfo;
+    }
 
     //    将table数据导出到Excel中
-    public void exportExcel(HttpServletResponse resp, String Year,String Month){
+        public void exportExcel(HttpServletResponse resp, String Year,String Month){
         resp.setHeader("Content-Disposition", "attachment;filename=text.xls");
         resp.setContentType("application/x-excel");
 //      创建Excel
@@ -111,10 +72,9 @@ public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo>
         oneRow.createCell(1).setCellValue("培训主题");
         oneRow.createCell(2).setCellValue("培训时间");
         oneRow.createCell(3).setCellValue("培训科目");
-        oneRow.createCell(4).setCellValue("培训时长");
-        oneRow.createCell(5).setCellValue("培训人数");
-        oneRow.createCell(6).setCellValue("未完成人数");
-        oneRow.createCell(7).setCellValue("未完成率");
+        oneRow.createCell(4).setCellValue("培训人数");
+        oneRow.createCell(5).setCellValue("完成人数");
+        oneRow.createCell(6).setCellValue("未完成率");
 
         String startTime=null;
         if(!StringUtils.isEmpty(Year) && !StringUtils.isEmpty(Month)){
@@ -123,27 +83,43 @@ public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo>
                 startTime=Year+Month;
             }
         }
-        System.out.println("============"+startTime);
-        List<Teachinfo> list=trainProgressMapper.selectExcel(startTime);
-
-        for (int i = 0; i <list.size(); i++) {
+        List<Teachinfo> list=trainProgressMapper.queryThemTable(startTime);
+        if(!StringUtils.isEmpty(list)){
+            for (int i = 0; i <list.size(); i++) {
+                float okpro = Float.parseFloat(String.valueOf(list.get(i).getOkProper()));
+                float allpro = Float.parseFloat(String.valueOf(list.get(i).getAllProper()));
 //            创建一行数据
-            Row towRow=sheet.createRow(i+1);
-            towRow.createCell(0).setCellValue(list.get(i).getLearnType());
-            towRow.createCell(1).setCellValue(list.get(i).getTheme());
-            towRow.createCell(2).setCellValue(list.get(i).getTimes());
-            towRow.createCell(3).setCellValue(list.get(i).getProject());
-            towRow.createCell(4).setCellValue(list.get(i).getLearnTime());
-            towRow.createCell(5).setCellValue(list.get(i).getAllproper());
-            towRow.createCell(6).setCellValue(list.get(i).getOk());
-            towRow.createCell(7).setCellValue(list.get(i).getBaifenbi()+"%");
+                Row towRow=sheet.createRow(i+1);
+                towRow.createCell(0).setCellValue(list.get(i).getLearnType()==1?"线上培训":"线下培训");
+                towRow.createCell(1).setCellValue(list.get(i).getTheme());
+                towRow.createCell(2).setCellValue(list.get(i).getStartTime()+"~"+list.get(i).getEndTime());
+                towRow.createCell(3).setCellValue(list.get(i).getProject());
+                towRow.createCell(4).setCellValue(list.get(i).getAllProper());
+                towRow.createCell(5).setCellValue(list.get(i).getOkProper());
+                towRow.createCell(6).setCellValue(String.format("%.2f",(okpro/allpro)*100)+"%");
+            }
         }
-        try {
-            workbook.write(resp.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            try {
+                workbook.write(resp.getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
+    //查询安全教育的所有年份
+    public List<Teachinfo> selectYear(){
+        return trainProgressMapper.selectYear();
+    }
+
+    /**
+     * @Author zhangduo
+     * @Description //TODO 查询某个主题的课程
+     * @Date 15:27 2020/8/1
+     * @Param
+     * @return
+     **/
+    public List<Vedio> queryAllPeiXunClass(Integer Id){
+        return trainProgressMapper.queryAllPeiXunClass(Id);
+    };
 
 }
