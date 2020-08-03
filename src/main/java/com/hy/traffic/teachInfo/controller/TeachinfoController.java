@@ -210,7 +210,18 @@ public class TeachinfoController {
      * @return
      */
     @RequestMapping("queryTrainRecord")
-    public StudentInfos queryTrainRecord(String cardId){
+    public List<TrainRecord> queryTrainRecord(String cardId, String year){
+        return teachinfoService.queryTrainRecord(cardId,year);
+    }
+
+
+    /**
+     * 返回个人信息
+     * @param cardId
+     * @return
+     */
+    @RequestMapping("oneInfo")
+    public StudentInfos oneInfo(String cardId){
         return teachinfoService.queryStuInfor(cardId);
     }
 

@@ -187,8 +187,8 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     /**
      * 根据学生id 查询他参加的培训
      */
-    @Select("SELECT s.id,s.`theme`,s.`startTime`,s.`endTime`,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id}")
-    public List<TrainRecord> queryTrainRecord(Integer id);
+    @Select("SELECT s.id,s.`theme`,s.`startTime`,s.`endTime`,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
+    public List<TrainRecord> queryTrainRecord(Integer id,String year);
 
 
     /**

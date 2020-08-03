@@ -185,11 +185,11 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
-    public List<TrainRecord> queryTrainRecord(String carId) {
+    public List<TrainRecord> queryTrainRecord(String carId,String year) {
         //学生id
         Integer id =mapper.queryIdByCarId(carId);
         //培训列表
-        List<TrainRecord> recordList =  mapper.queryTrainRecord(id);
+        List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year);
         for (int i = 0; i < recordList.size(); i++) {
             List<AnswerRecord> answerList =  mapper.queryAnswerRecord(recordList.get(i).getId(),id);
             recordList.get(i).setScore(answerList);
