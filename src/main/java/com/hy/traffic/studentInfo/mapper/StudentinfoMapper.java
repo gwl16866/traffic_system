@@ -52,6 +52,15 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     @SelectProvider(type = Provider.class, method = "studentxiangqing")
     public List<Studentxiangqing> studentxiangqing(Integer id);
 
-    @Select(" select * from studentinfo s where s.id in (select  stuid  from saftydustudentinfo   where saftyid=#{value}) ")
+    @Select(" SELECT s.*,a.id as aid , a.status as astatus,a.startTime,a.score FROM  studentinfo s LEFT JOIN answerrecord a ON a.stuid=s.id WHERE s.id IN(SELECT stuid FROM saftydustudentinfo WHERE saftyId=#{value}) AND a.saftyId=#{value}")
     public List<Studentxiangqing> studentxiangqing2(Integer id);
+
+    @Select("SELECT stuid FROM saftydustudentinfo WHERE saftyid=#{value}")
+    public Integer[] stuid(Integer id);
+
+    @Select("SELECT * FROM studentinfo WHERE id=#{value}")
+    public Studentxiangqing stuentmq(Integer id);
+
+
+
 }

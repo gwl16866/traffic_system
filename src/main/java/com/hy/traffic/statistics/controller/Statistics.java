@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -161,7 +162,44 @@ public class Statistics {
   @ResponseBody
   @RequestMapping("/xiangqing2")
   public List<Studentxiangqing> xiangqing(Integer id){
-        return studentinfoService.studentxiangqing2(id);
+        System.out.println(id);
+        List<Studentxiangqing>  list=studentinfoService.studentxiangqing2(id);
+       Integer [] in=studentinfoService.stuid(id);
+       Integer [] in2= new Integer[list.size()];
+
+
+      if(in.length>0){
+          for (int i = 0; i < list.size(); i++) {
+              in2[i]=list.get(i).getId();
+          }
+      }
+
+      List<Integer>  list1 = new ArrayList();
+      List<Integer>  list2 = new ArrayList();
+
+      //调用Arrays.asList将数组转换成列表
+      List<Integer> aList = Arrays.asList(in);
+      List<Integer> bList = Arrays.asList(in2);
+//接下去是重点。将上面两个List转换成ArrayList
+      List<Integer> acList = new ArrayList<Integer>(aList);
+      List<Integer> bcList = new ArrayList<Integer>(bList);
+//遍历去除重复
+      for(Integer i : bcList){
+
+          if(acList.contains(i)){
+              acList.remove(i);
+          }
+      }
+
+        System.out.println("成功与否"+acList.size());
+
+      for (Integer integer : acList) {
+          Studentxiangqing studentxiangqing=new Studentxiangqing();
+          studentxiangqing=studentinfoService.stuentmq(integer);
+          list.add(studentxiangqing);
+      }
+
+        return list;
   }
 
 
