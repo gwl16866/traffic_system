@@ -19,57 +19,39 @@ import java.time.LocalDateTime;
  * @since 2020-07-25
  */
 @Data
-@TableName(value = "saftyedu")
+@TableName("saftyedu")
 public class Teachinfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     //id
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
     //培训主题
     private String theme;
     //开始时间
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Shanghai")
-    private LocalDateTime startTime;
+    private String startTime;
     //结束时间
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Shanghai")
-    private LocalDateTime endTime;
+    private String endTime;
     //培训科目
     private String project;
-    //培训课程
-    private String lession;
-    //参训学员
-    private String student;
     //安全管理员
     private String manager;
     //考核员
     private String testPeople;
     //学习方式
-    private String learnType;
+    private Integer learnType;
     //培训状态
-    private Integer status;
+    private String status;
     //培训地点
     private String address;
     //培训人
     private String trainTeacher;
-   //下拉框查询时间
-   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Shanghai")
-    private LocalDate selectTime;
-//    培训时长
+    //培训时长
     private String learnTime;
-
-//   查询下拉框的年份
-    private String nianfen;
-
-    private Integer allproper;  //参训所有人
-    private Integer ok;          //已完成人
-    private Integer No;          //未完成人
-    private  Integer bfb;         //所占百分比
-    private String times;
-    private Float baifenbi;
-
-
-
-
+    //及格分数
+    private  Integer passscore;
+    //总人数
+    private  Integer allProper;
+    //完成人数
+    private  Integer okProper;
 }
