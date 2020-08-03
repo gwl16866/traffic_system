@@ -17,5 +17,5 @@ public interface StudentaccmqMapper extends BaseMapper<Studentacc> {
 
 
     @SelectProvider(type = StudentaccMq.class,method = "thenumber")
-    public int thenumber(String studentid,Integer saftyid,Integer completion);
+    public int thenumber(String time,Integer i,Integer completion,Integer learnType,Integer id);
 }

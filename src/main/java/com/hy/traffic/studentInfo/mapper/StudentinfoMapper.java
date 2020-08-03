@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hy.traffic.saftyEdu.entity.Saftyedu;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
+import com.hy.traffic.studentInfo.entity.Studentxiangqing;
 import com.hy.traffic.studentInfo.provider.StudentinfoProvider;
 import com.hy.traffic.studentInfo.utils.Provider;
 import org.apache.ibatis.annotations.*;
@@ -29,23 +30,28 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     @Select("select * from saftyedu where id in(select said from saftydustudentinfo where stuid= #{value})")
     List<Saftyedu> queryStudentinfoBystuid(Integer stuid);
 
-    @SelectProvider(type = StudentinfoProvider.class , method = "queryByid")
-     List<Studentinfo> queryByid(Integer said, String select , String neirong);
+    @SelectProvider(type = StudentinfoProvider.class, method = "queryByid")
+    List<Studentinfo> queryByid(Integer said, String select, String neirong);
 
     @Select("select * from studentinfo where id=#{value}")
     Studentinfo querystuByid(Integer id);
 
-    @SelectProvider(type = Provider.class,method = "queryAllStudentInFo")
-    IPage<Studentinfo> queryAllStudentInFo(@Param("ipage")IPage<Studentinfo> page , @Param("studentinfo")Studentinfo studentinfo);
+    @SelectProvider(type = Provider.class, method = "queryAllStudentInFo")
+    IPage<Studentinfo> queryAllStudentInFo(@Param("ipage") IPage<Studentinfo> page, @Param("studentinfo") Studentinfo studentinfo);
 
-    @UpdateProvider(type = Provider.class , method = "updateOneStudent")
-    public int updateOneStudent(Integer id,Integer status);
-
+    @UpdateProvider(type = Provider.class, method = "updateOneStudent")
+    public int updateOneStudent(Integer id, Integer status);
 
     //登录
     @Select("select * from studentinfo where cardId=${cardId} and password=${password}")
-    public Studentinfo selectStudentInfo(String cardId,String password);
+    public Studentinfo selectStudentInfo(String cardId, String password);
 
     @Update("update studentinfo set password=${password} where id=#{id}")
-    public void updatePassword(Integer id,String password);
+    public void updatePassword(Integer id, String password);
+
+    @SelectProvider(type = Provider.class, method = "studentxiangqing")
+    public List<Studentxiangqing> studentxiangqing(Integer id);
+
+    @Select(" select * from studentinfo s where s.id in (select  stuid  from saftydustudentinfo   where saftyid=#{value}) ")
+    public List<Studentxiangqing> studentxiangqing2(Integer id);
 }

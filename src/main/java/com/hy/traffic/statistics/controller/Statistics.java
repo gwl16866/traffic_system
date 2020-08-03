@@ -1,10 +1,9 @@
 package com.hy.traffic.statistics.controller;
 
-import com.hy.traffic.saftyEdu.entity.Bchar;
-import com.hy.traffic.saftyEdu.entity.Bcharinfo;
-import com.hy.traffic.saftyEdu.entity.NData;
-import com.hy.traffic.saftyEdu.entity.Saftyedu;
+import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.service.impl.SaftyeduServiceImpl;
+import com.hy.traffic.studentInfo.entity.Studentxiangqing;
+import com.hy.traffic.studentInfo.service.impl.StudentinfoServiceImpl;
 import com.hy.traffic.studentaccmq.service.impI.StudentaccmqServiceImpI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +24,8 @@ public class Statistics {
     @Autowired
     StudentaccmqServiceImpI studentaccmqServiceImpI;
 
+    @Autowired
+    StudentinfoServiceImpl studentinfoService;
     /*
     * @parm mq
     * 1到12月报名人数
@@ -32,13 +33,13 @@ public class Statistics {
     @RequestMapping("/year")
     @ResponseBody
     public Integer[] year(){
-        return saftyeduService.year();
+        return saftyeduService.year(MqBean.time(),2,null);
     }
 
     @RequestMapping("/thenumber")
     @ResponseBody
     public Integer[] thenumber(){
-        return saftyeduService.thenumber();
+        return saftyeduService.year(MqBean.time(),null,null);
     }
 
     @ResponseBody
@@ -114,21 +115,14 @@ public class Statistics {
     @RequestMapping("/inittableData2")
     public List<NData> inittableData2(){
         List<NData> res=new ArrayList<>();
-        List<Saftyedu> list=saftyeduService.jhs();
+        List<Saftyedu> jhs=saftyeduService.jh(MqBean.time(),null);
+        int count=saftyeduService.jhs(null,null,null);
+        int okcount=saftyeduService.jhs(2,null,null);
 
-        int count=0;
-        int okcount=0;
-        for (Saftyedu saftyedu : list) {
-            String [] str=saftyedu.getStudent().split(",");
-            count+=str.length;
-        }
-        for (Saftyedu saftyedu : list) {
-            okcount+=studentaccmqServiceImpI.thenumber(saftyedu.getStudent(),saftyedu.getId(),2);
-        }
 
         NData nData=new NData();
         nData.setName("枣阳市光武石化运输有限公式");
-        nData.setJhs(list.size());
+        nData.setJhs(jhs.size());
         nData.setCount(count);
         nData.setOkcount(okcount);
         if(okcount!=0){
@@ -139,31 +133,36 @@ public class Statistics {
 
 
         res.add(nData);
-        return res;
+       return res;
     }
 
     @ResponseBody
     @RequestMapping("/xiangqing")
     public List<Saftyedu> xaingqing(){
-        List<Saftyedu> list=saftyeduService.jhs();
+        List<Saftyedu> list=saftyeduService.jh(MqBean.time(),null);
 
         for (Saftyedu saftyedu : list) {
-            int a=studentaccmqServiceImpI.thenumber(saftyedu.getStudent(),saftyedu.getId(),2);
-            int b=studentaccmqServiceImpI.thenumber(saftyedu.getStudent(),saftyedu.getId(),1);
+            int a=studentaccmqServiceImpI.thenumber(MqBean.time(),null,2,null,saftyedu.getId());
+            int b=studentaccmqServiceImpI.thenumber(MqBean.time(),null,1,null,saftyedu.getId());
             if(a>0){
                 saftyedu.setJd(a*100/(a+b));
                 saftyedu.setA(a);
                 saftyedu.setB(a+b);
             }else{
                 saftyedu.setJd(0);
-                saftyedu.setA(0);
-                saftyedu.setB(0);
+                saftyedu.setA(a);
+                saftyedu.setB(a+b);
             }
         }
 
-        return list;
+       return list;
 }
 
+  @ResponseBody
+  @RequestMapping("/xiangqing2")
+  public List<Studentxiangqing> xiangqing(Integer id){
+        return studentinfoService.studentxiangqing2(id);
+  }
 
 
 }

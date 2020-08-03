@@ -4,18 +4,24 @@ import org.apache.ibatis.annotations.Param;
 
 public class StudentaccMq {
 
-    public String thenumber(@Param("studentid")String studentid,@Param("saftyid")Integer saftyid,@Param("completion")Integer completion){
-        StringBuffer str=new StringBuffer(" select count(1) from studentacc where 1=1 " );
+    public String thenumber(@Param("time")String time,@Param("i")Integer i,@Param("completion")Integer completion,@Param("learnType")Integer learnType,@Param("id")Integer id){
+        StringBuffer str=new StringBuffer(" select  count(1)  from saftydustudentinfo where 1=1 ");
 
-        if(studentid!=null && studentid!=""){
-            str.append(" and studentid in ( "+studentid+" ) ");
+        str.append("and saftyid in(select  id from saftyedu where date_format(startTime,'%Y')= "+time+"  ");
+
+        if(i!=null){
+            str.append(" and month(startTime)= "+i+" ");
+        }
+        if(learnType!=null){
+            str.append(" and learnType="+learnType+" ");
         }
 
-        if(saftyid!=null){
-            str.append(" and saftyid= "+saftyid+" ");
+        if(id!=null){
+            str.append(" and id="+id+"");
         }
+        str.append(" ) ");
         if(completion!=null){
-            str.append(" and completion= "+completion+" ");
+            str.append(" and completion="+completion+"");
         }
         return str.toString();
     }

@@ -39,4 +39,11 @@ public class Provider {
     }
 
 
+    public String studentxiangqing(Integer id){
+        StringBuffer str=new StringBuffer(" select s.*,a.id as aid , a.status as astatus,a.score from studentinfo s left join  answerrecord  a on s.id=a.saftyid where a.saftyid="+id+" ");
+
+        return  str.toString();
+    }
+
+
 }

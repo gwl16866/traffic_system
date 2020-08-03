@@ -18,8 +18,8 @@ public class StudentaccmqServiceImpI extends ServiceImpl<StudentaccmqMapper, Stu
         return studentaccmqMapper.queryall();
     }
 
-    public int thenumber(String studentid,Integer saftyid,Integer completion){
-        return studentaccmqMapper.thenumber(studentid,saftyid,completion);
+    public int thenumber(String time,Integer i,Integer completion,Integer learnType,Integer id){
+        return studentaccmqMapper.thenumber(time,i,completion,learnType,id);
     }
 
 

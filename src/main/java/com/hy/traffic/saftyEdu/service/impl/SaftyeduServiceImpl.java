@@ -3,10 +3,7 @@ package com.hy.traffic.saftyEdu.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.hy.traffic.saftyEdu.entity.Bchar;
-import com.hy.traffic.saftyEdu.entity.PageJson;
-import com.hy.traffic.saftyEdu.entity.Saftyedu;
-import com.hy.traffic.saftyEdu.entity.Tree;
+import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.mapper.SaftyeduMapper;
 import com.hy.traffic.saftyEdu.service.ISaftyeduService;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
@@ -19,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -114,72 +110,29 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
 
 
-    public Integer[] year(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        Date date=new Date();
-        String time=sdf.format(date);
+    public Integer[] year(String time,Integer completion,Integer learnType){
 
         Integer [] in=new Integer [12];
         for (int i = 0; i < in.length; i++) {
-            List<Saftyedu> list=saftyeduMapper.year(time,i+1);
-            int cc=0;
-            for (Saftyedu saftyedu : list) {
-                String str=saftyedu.getStudent();
-                String [] le=str.split(",");
-                cc+=le.length;
-            }
-            in[i]=cc;
+           Integer count=saftyeduMapper.year(time,i+1,completion,learnType);
+           in[i]=count;
         }
         return in;
     }
 
-    public Integer[] thenumber(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        Date date=new Date();
-        String time=sdf.format(date);
 
-        Integer [] in=new Integer [12];
-        for (int i = 0; i < in.length; i++) {
-            List<Saftyedu> list=saftyeduMapper.year(time,i+1);
-            int cc=0;
-            for (Saftyedu saftyedu : list) {
-                String str=saftyedu.getStudent(); //培训人
-                Integer sid=saftyedu.getId();
-                cc+=studentaccmqMapper.thenumber(str,sid,2);
-
-            }
-            in[i]=cc;
-        }
-
-        return in;
-    }
 
     public  List<Bchar> num(Integer learnType){
         System.out.println("测=="+learnType);
-        Integer[] in=new Integer[2];
-        int nb=0;
-        int nb2=0;
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        Date date=new Date();
-        String cc=sdf.format(date);
-        List<Saftyedu> list=saftyeduMapper.num(cc,learnType);
-        if(list.size()>0){
-            System.out.println("集合的长度："+list.size());
-            for (Saftyedu saftyedu : list) {
-                System.out.println("大哥啊-----------------"+saftyedu.getId());
-                nb+=studentaccmqMapper.thenumber(saftyedu.getStudent(),saftyedu.getId(),2);
-                nb2+=studentaccmqMapper.thenumber(saftyedu.getStudent(),saftyedu.getId(),1);
-            }
-        }
 
-        in[0]=nb;
-        in[1]=nb2;
+        Integer count=saftyeduMapper.year(MqBean.time(),null,2,learnType);
+        Integer count2=saftyeduMapper.year(MqBean.time(),null,1,learnType);
 
         Bchar bchar=new Bchar();
-        bchar.setValue(in[0]);
+        bchar.setValue(count);
         bchar.setName("完成人数");
         Bchar bchar1=new Bchar();
-        bchar1.setValue(in[1]);
+        bchar1.setValue(count2);
         bchar1.setName("未完成人数");
         List<Bchar> mq=new ArrayList<>();
         mq.add(bchar);
@@ -187,15 +140,14 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         return mq;
     }
 
-    public List<Saftyedu> jhs(){
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy");
-        Date date=new Date();
-        String cc=sdf.format(date);
-        List<Saftyedu> list=saftyeduMapper.num(cc,null);
-
-        return list;
+    public Integer jhs(Integer completion,Integer i,Integer learnType){
+        Integer in=saftyeduMapper.year(MqBean.time(),i,completion,learnType);
+        return in;
     }
 
+    public List<Saftyedu> jh(String time,Integer learnType){
+        return saftyeduMapper.num(time,learnType);
+    }
 
 
 
@@ -230,4 +182,6 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         pageJson.setCount(page.getTotal());
         return pageJson;
     }
+
+
 }

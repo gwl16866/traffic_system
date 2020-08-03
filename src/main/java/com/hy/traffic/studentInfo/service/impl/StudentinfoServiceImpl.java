@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
+import com.hy.traffic.studentInfo.entity.Studentxiangqing;
 import com.hy.traffic.studentInfo.mapper.StudentinfoMapper;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
 import com.hy.traffic.studentInfo.utils.ReturnJson;
@@ -209,4 +210,11 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
          studentinfoMapper.updatePassword(id, password);
     }
 
+    public List<Studentxiangqing> studentxiangqing(Integer id){
+        return studentinfoMapper.studentxiangqing(id);
+    }
+
+    public List<Studentxiangqing> studentxiangqing2(Integer id){
+        return studentinfoMapper.studentxiangqing2(id);
+    }
 }

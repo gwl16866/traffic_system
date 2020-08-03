@@ -79,7 +79,7 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
     public List<ClassDetail> classDetailList(String id);
 
     @SelectProvider(type = MqBean.class,method = "year")
-    public List<Saftyedu> year(String time,Integer i);
+    public Integer year(String time,Integer i,Integer completion,Integer learnType);
 
     @SelectProvider(type =MqBean.class,method = "num")
     public List<Saftyedu> num(String time,Integer learnType);
