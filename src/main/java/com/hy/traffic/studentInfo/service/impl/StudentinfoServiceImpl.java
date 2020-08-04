@@ -3,8 +3,10 @@ package com.hy.traffic.studentInfo.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hy.traffic.studentInfo.entity.Answer;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.entity.Studentxiangqing;
+import com.hy.traffic.studentInfo.mapper.AnswerMapper;
 import com.hy.traffic.studentInfo.mapper.StudentinfoMapper;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
 import com.hy.traffic.studentInfo.utils.ReturnJson;
@@ -35,6 +37,9 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
 
     @Autowired
     StudentinfoMapper studentinfoMapper;
+
+    @Autowired
+    AnswerMapper answerMapper;
 
     /**
      * @Author zhangduo
@@ -214,16 +219,20 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         return studentinfoMapper.studentxiangqing(id);
     }
 
-    public List<Studentxiangqing> studentxiangqing2(Integer id){
-        return studentinfoMapper.studentxiangqing2(id);
+    public List<Studentxiangqing> studentxiangqing2(Integer id,String aaa,String realName){
+        return studentinfoMapper.studentxiangqing2(id,aaa,realName);
     }
 
     public Integer[] stuid(Integer id){
         return studentinfoMapper.stuid(id);
     }
 
-    public Studentxiangqing stuentmq(Integer id){
-        return studentinfoMapper.stuentmq(id);
+    public Studentxiangqing stuentmq(Integer id,String aaa,String realName){
+        return studentinfoMapper.stuentmq(id,aaa,realName);
     }
 
+
+    public List<Answer> queryallAnswer(Integer id){
+        return answerMapper.queryallanswer(id);
+    }
 }

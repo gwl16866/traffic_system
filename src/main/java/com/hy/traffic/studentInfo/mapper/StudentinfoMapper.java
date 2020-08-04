@@ -52,14 +52,16 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     @SelectProvider(type = Provider.class, method = "studentxiangqing")
     public List<Studentxiangqing> studentxiangqing(Integer id);
 
-    @Select(" SELECT s.*,a.id as aid , a.status as astatus,a.startTime,a.score FROM  studentinfo s LEFT JOIN answerrecord a ON a.stuid=s.id WHERE s.id IN(SELECT stuid FROM saftydustudentinfo WHERE saftyId=#{value}) AND a.saftyId=#{value}")
-    public List<Studentxiangqing> studentxiangqing2(Integer id);
+    //@Select(" SELECT s.*,a.id as aid , a.status as astatus,a.startTime,a.score FROM  studentinfo s LEFT JOIN answerrecord a ON a.stuid=s.id WHERE s.id IN(SELECT stuid FROM saftydustudentinfo WHERE saftyId=#{value}) AND a.saftyId=#{value}")
+    @SelectProvider(type = Provider.class, method = "studentxiangqing2")
+    public List<Studentxiangqing> studentxiangqing2(Integer id,String aaa,String realName);
 
     @Select("SELECT stuid FROM saftydustudentinfo WHERE saftyid=#{value}")
     public Integer[] stuid(Integer id);
 
-    @Select("SELECT * FROM studentinfo WHERE id=#{value}")
-    public Studentxiangqing stuentmq(Integer id);
+    //@Select("SELECT * FROM studentinfo WHERE id=#{value}")
+    @SelectProvider(type = Provider.class, method = "stuentmq")
+    public Studentxiangqing stuentmq(Integer id,String aaa,String realName);
 
 
 

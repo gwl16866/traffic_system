@@ -2,6 +2,7 @@ package com.hy.traffic.statistics.controller;
 
 import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.service.impl.SaftyeduServiceImpl;
+import com.hy.traffic.studentInfo.entity.Answer;
 import com.hy.traffic.studentInfo.entity.Studentxiangqing;
 import com.hy.traffic.studentInfo.service.impl.StudentinfoServiceImpl;
 import com.hy.traffic.studentaccmq.service.impI.StudentaccmqServiceImpI;
@@ -161,46 +162,121 @@ public class Statistics {
 
   @ResponseBody
   @RequestMapping("/xiangqing2")
-  public List<Studentxiangqing> xiangqing(Integer id){
+  public List<Studentxiangqing> xiangqing(Integer id,String aaa,String realName,Integer radio){
+        System.out.println("牛"+radio);
         System.out.println(id);
-        List<Studentxiangqing>  list=studentinfoService.studentxiangqing2(id);
-       Integer [] in=studentinfoService.stuid(id);
-       Integer [] in2= new Integer[list.size()];
+        System.out.println("按什么查询"+aaa);
+        System.out.println("查询条件"+realName);
+
+        List<Studentxiangqing>  list=studentinfoService.studentxiangqing2(id,aaa,realName);
+        if(radio==1){
+            Integer [] in=studentinfoService.stuid(id);
+            Integer [] in2= new Integer[list.size()];
 
 
-      if(in.length>0){
-          for (int i = 0; i < list.size(); i++) {
-              in2[i]=list.get(i).getId();
-          }
-      }
+            if(in.length>0){
+                for (int i = 0; i < list.size(); i++) {
+                    in2[i]=list.get(i).getId();
+                }
+            }
 
-      List<Integer>  list1 = new ArrayList();
-      List<Integer>  list2 = new ArrayList();
+            List<Integer>  list1 = new ArrayList();
+            List<Integer>  list2 = new ArrayList();
 
-      //调用Arrays.asList将数组转换成列表
-      List<Integer> aList = Arrays.asList(in);
-      List<Integer> bList = Arrays.asList(in2);
+            //调用Arrays.asList将数组转换成列表
+            List<Integer> aList = Arrays.asList(in);
+            List<Integer> bList = Arrays.asList(in2);
 //接下去是重点。将上面两个List转换成ArrayList
-      List<Integer> acList = new ArrayList<Integer>(aList);
-      List<Integer> bcList = new ArrayList<Integer>(bList);
+            List<Integer> acList = new ArrayList<Integer>(aList);
+            List<Integer> bcList = new ArrayList<Integer>(bList);
 //遍历去除重复
-      for(Integer i : bcList){
+            for(Integer i : bcList){
+                if(acList.contains(i)){
+                    acList.remove(i);
+                }
+            }
 
-          if(acList.contains(i)){
-              acList.remove(i);
-          }
-      }
+            for (Integer integer : acList) {
+                System.out.println("怎么回事："+integer);
+            }
 
-        System.out.println("成功与否"+acList.size());
+            System.out.println("成功与否"+acList.size());
 
-      for (Integer integer : acList) {
-          Studentxiangqing studentxiangqing=new Studentxiangqing();
-          studentxiangqing=studentinfoService.stuentmq(integer);
-          list.add(studentxiangqing);
-      }
+            for (Integer integer : acList) {
+                Studentxiangqing studentxiangqing=studentinfoService.stuentmq(integer,aaa,realName);
+                if(studentxiangqing!=null){
+                    list.add(studentxiangqing);
+                }
+            }
+
+        }else if(radio==2){
+
+            for (int i = 0; i < list.size(); i++) {
+                if(list.get(i).getAstatus()!=2){
+                    list.remove(i);
+                }
+            }
+        }else if(radio==3){
+
+            Integer [] in=studentinfoService.stuid(id);
+            Integer [] in2= new Integer[list.size()];
+
+
+            if(in.length>0){
+                for (int i = 0; i < list.size(); i++) {
+                    in2[i]=list.get(i).getId();
+                }
+            }
+
+            List<Integer>  list1 = new ArrayList();
+            List<Integer>  list2 = new ArrayList();
+
+            //调用Arrays.asList将数组转换成列表
+            List<Integer> aList = Arrays.asList(in);
+            List<Integer> bList = Arrays.asList(in2);
+//接下去是重点。将上面两个List转换成ArrayList
+            List<Integer> acList = new ArrayList<Integer>(aList);
+            List<Integer> bcList = new ArrayList<Integer>(bList);
+//遍历去除重复
+            for(Integer i : bcList){
+                if(acList.contains(i)){
+                    acList.remove(i);
+                }
+            }
+
+            for (Integer integer : acList) {
+                System.out.println("怎么回事："+integer);
+            }
+
+            System.out.println("成功与否"+acList.size());
+
+            list.clear();
+            for (Integer integer : acList) {
+                Studentxiangqing studentxiangqing=studentinfoService.stuentmq(integer,aaa,realName);
+                if(studentxiangqing!=null){
+                    list.add(studentxiangqing);
+                }
+            }
+
+
+
+      }else if(radio==4){
+
+            for (int i = 0; i < list.size(); i++) {
+                if(list.get(i).getAstatus()!=1){
+                    list.remove(i);
+                }
+            }
+        }
 
         return list;
   }
 
+
+  @ResponseBody
+  @RequestMapping("/corexiangqing")
+  public List<Answer> queryallAnswer(Integer id){
+        return studentinfoService.queryallAnswer(id);
+  }
 
 }

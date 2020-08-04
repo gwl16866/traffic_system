@@ -45,5 +45,62 @@ public class Provider {
         return  str.toString();
     }
 
+    public String studentxiangqing2(@Param("id")Integer id,@Param("aaa") String aaa,@Param("realName") String realName){
+        StringBuffer sss=new StringBuffer(" SELECT s.*,a.id as aid , a.status as astatus,a.startTime,a.score FROM  studentinfo s LEFT JOIN answerrecord a ON a.stuid=s.id WHERE s.id IN(SELECT stuid FROM saftydustudentinfo WHERE saftyId="+id+") AND a.saftyId="+id+" ");
+
+       if(aaa!=null&&!"".equals(aaa) && aaa.trim().length()>0){
+           if(aaa.equals("按姓名")){
+            sss.append(" and s.realName like '%"+realName+"%' ");
+           }
+           if(aaa.equals("按身份证")){
+               sss.append(" and s.cardId="+realName+"");
+           }
+
+           if(aaa.equals("按联系电话")){
+               sss.append(" and s.linkNum= "+realName+"");
+           }
+           if(aaa.equals("按车牌号")){
+               sss.append(" and s.busNum ="+realName+"");
+           }
+
+       }
+
+        return sss.toString();
+    }
+
+    public String stuentmq(@Param("id")Integer id,@Param("aaa") String aaa,@Param("realName") String realName){
+        StringBuffer sss=new StringBuffer(" SELECT * FROM studentinfo s WHERE s.id="+id+" ");
+
+
+        if(aaa!=null&&!"".equals(aaa) && aaa.trim().length()>0){
+            if(aaa.equals("按姓名")){
+                sss.append(" and s.realName like  '%"+realName+"%' ");
+            }
+            if(aaa.equals("按身份证")){
+                sss.append(" and s.cardId ="+realName+"");
+            }
+
+            if(aaa.equals("按联系电话")){
+                sss.append(" and s.linkNum= "+realName+"");
+            }
+            if(aaa.equals("按车牌号")){
+                sss.append(" and s.busNum ="+realName+"");
+            }
+
+        }
+        return sss.toString();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
