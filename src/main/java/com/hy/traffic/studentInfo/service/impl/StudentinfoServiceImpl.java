@@ -217,4 +217,13 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
     public List<Studentxiangqing> studentxiangqing2(Integer id){
         return studentinfoMapper.studentxiangqing2(id);
     }
+
+    public Integer[] stuid(Integer id){
+        return studentinfoMapper.stuid(id);
+    }
+
+    public Studentxiangqing stuentmq(Integer id){
+        return studentinfoMapper.stuentmq(id);
+    }
+
 }

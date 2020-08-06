@@ -79,6 +79,9 @@ public class Studentxiangqing {
     private Integer aid;
     @TableField(exist = false)
     private Integer astatus;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss" ,timezone = "Asia/Shanghai")
+    @TableField(exist = false)
+    private LocalDateTime startTime;
     @TableField(exist = false)
     private Integer score;
 
