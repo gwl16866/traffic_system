@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -230,9 +232,13 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
     public Studentxiangqing stuentmq(Integer id,String aaa,String realName){
         return studentinfoMapper.stuentmq(id,aaa,realName);
     }
-
-
     public List<Answer> queryallAnswer(Integer id){
         return answerMapper.queryallanswer(id);
     }
+
+    public Integer querySumPlayTime(Integer saftyId,Integer studentId){
+//        DecimalFormat f = new DecimalFormat("0");
+//        f.setRoundingMode(RoundingMode.HALF_UP);
+        return studentinfoMapper.querySumPlayTime(saftyId,studentId);
+    };
 }

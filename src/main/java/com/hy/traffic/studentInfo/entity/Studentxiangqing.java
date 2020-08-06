@@ -85,6 +85,9 @@ public class Studentxiangqing {
     @TableField(exist = false)
     private Integer score;
 
+    @TableField(exist = false)
+    private  Integer playtime;
+
 
 
 

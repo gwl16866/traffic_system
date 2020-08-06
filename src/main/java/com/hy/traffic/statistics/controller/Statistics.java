@@ -209,6 +209,10 @@ public class Statistics {
                 }
             }
 
+            for (Studentxiangqing studentxiangqing : list) {
+                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+            }
+
         }else if(radio==2){
 
             for (int i = 0; i < list.size(); i++) {
@@ -216,6 +220,10 @@ public class Statistics {
                     list.remove(i);
                 }
             }
+            for (Studentxiangqing studentxiangqing : list) {
+                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+            }
+
         }else if(radio==3){
 
             Integer [] in=studentinfoService.stuid(id);
@@ -258,6 +266,9 @@ public class Statistics {
                 }
             }
 
+            for (Studentxiangqing studentxiangqing : list) {
+                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+            }
 
 
       }else if(radio==4){
@@ -267,7 +278,14 @@ public class Statistics {
                     list.remove(i);
                 }
             }
+
+            for (Studentxiangqing studentxiangqing : list) {
+                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+            }
+
         }
+
+
 
         return list;
   }
