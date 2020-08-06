@@ -11,8 +11,8 @@ public class TrainVedio implements Serializable {
     private Integer id;
     private String vedio;
     private String status;
-
-
+    private String vedioTime;
+    private String playTime;
 
 
 }

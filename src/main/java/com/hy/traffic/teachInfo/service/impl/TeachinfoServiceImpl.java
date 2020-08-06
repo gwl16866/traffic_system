@@ -6,6 +6,7 @@ import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.math.RoundingMode;
@@ -170,7 +171,11 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
             //总数
             Integer counts=mapper.queryAllSaftyStuVedioCounts(saftyInfos.get(i).getId(),id);
             Integer okCounts=mapper.queryOkSaftyStuVedioCounts(saftyInfos.get(i).getId(),id);
-            Integer bili = okCounts*100/counts;
+            Integer bili = 0;
+            if (okCounts > 0){
+                bili = okCounts * 100 / counts;
+            }
+
             DecimalFormat f = new DecimalFormat("0");
             f.setRoundingMode(RoundingMode.HALF_UP);
             onlineTrain.setStudyDetail(f.format(bili)+"%");
@@ -180,8 +185,9 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
-    public List<TrainVedio> queryVedioByTrainId(Integer trainId) {
-        return mapper.queryVedioByTrainId(trainId);
+    public List<TrainVedio> queryVedioByTrainId(Integer trainId,String cardId) {
+        Integer id = mapper.queryIdByCarId(cardId);
+        return mapper.queryVedioByTrainId(trainId,id);
     }
 
     @Override
@@ -206,6 +212,13 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     public Integer updateVedioStatus(Integer trainId, String cardId, Integer vedioId) {
         Integer id = mapper.queryIdByCarId(cardId);
         Integer ids = mapper.updateVedioStatus(trainId,id,vedioId);
+        return ids;
+    }
+
+    @Override
+    public Integer updateVedioPlayTime(Integer trainId, String cardId, Integer vedioId,Integer playTime) {
+        Integer id = mapper.queryIdByCarId(cardId);
+        Integer ids = mapper.updateVedioPlayTime(trainId,id,vedioId,playTime);
         return ids;
     }
 

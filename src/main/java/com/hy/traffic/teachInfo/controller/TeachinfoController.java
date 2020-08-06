@@ -1,16 +1,21 @@
 package com.hy.traffic.teachInfo.controller;
 
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.hy.traffic.studentInfo.entity.Studentinfo;
+import com.hy.traffic.studentInfo.service.IStudentinfoService;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -27,7 +32,11 @@ public class TeachinfoController {
 
     @Autowired
     private ITeachinfoService teachinfoService;
+    @Autowired
+    private IStudentinfoService iStudentinfoService;
 
+    @Value("${img.filePath}")
+    String imgFilePath;
     /**
      * 查询所有教育课题
      * @return
@@ -146,7 +155,7 @@ public class TeachinfoController {
         }
         Upload up = new Upload();
         up.setCode("0");
-        up.setFilename("http://localhost:8081/imgs/" +picName + extName);
+        up.setFilename(imgFilePath +picName + extName);
         return up;
     }
 
@@ -200,8 +209,8 @@ public class TeachinfoController {
      * @return
      */
     @RequestMapping("queryVedioByTrainId")
-    public List<TrainVedio> queryVedioByTrainId(Integer trainId){
-        return teachinfoService.queryVedioByTrainId(trainId);
+    public List<TrainVedio> queryVedioByTrainId(Integer trainId,String cardId){
+        return teachinfoService.queryVedioByTrainId(trainId,cardId);
     }
 
     /**
@@ -242,7 +251,23 @@ public class TeachinfoController {
             return 0;
         }
     }
-
+    /**
+     * 修改 视频播放时长
+     * @param trainId
+     * @param cardId
+     * @param vedioId
+     * @return
+     */
+    @RequestMapping("updateVedioPlayTime")
+    public Integer updateVedioPlayTime(Integer trainId,String cardId,Integer vedioId,Integer playTime){
+        Integer ok = teachinfoService.updateVedioPlayTime(trainId,cardId,vedioId,playTime);
+        System.out.println(ok);
+        if (null != ok && ok >0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
     /**
      * 查询题目根据培训id
      * @param trainId
@@ -255,12 +280,23 @@ public class TeachinfoController {
 
     /**
      * 评分
-     * @param examObject
+     * @param
      * @return
      */
     @RequestMapping("testScore")
-    public Integer testScore(@RequestBody ExamObject examObject){
-      return   teachinfoService.testScore(examObject);
+    public Integer testScore(@RequestBody Map map) {
+
+        ExamObject result = JSONObject.parseObject(JSONObject.toJSONString(map), ExamObject.class);
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("cardId", result.getReceiveScoreRecord().getStuIds());
+        List<Studentinfo> studentinfos = iStudentinfoService.list(queryWrapper);
+
+        if (studentinfos.size() > 0) {
+            result.getReceiveScoreRecord().setStuId(studentinfos.get(0).getId());
+        }
+
+        return teachinfoService.testScore(result);
     }
 
 

@@ -11,5 +11,7 @@ public class AnswerRecord implements Serializable {
     private String endTime;
     private String STATUS;
     private String score;
+    private String theme;
+    private String learnType;
 
 }

@@ -1,20 +1,27 @@
 package com.hy.traffic.studentInfo.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hy.traffic.studentInfo.entity.Info;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
+import com.hy.traffic.studentInfo.service.IStudentinfoService;
 import com.hy.traffic.studentInfo.service.impl.StudentinfoServiceImpl;
 import com.hy.traffic.studentInfo.utils.ReturnJson;
+import com.hy.traffic.teachInfo.entity.Upload;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @Author zhangduo
@@ -30,6 +37,11 @@ public class StudentinfoController {
     @Autowired
     StudentinfoServiceImpl studentinfoService;
 
+    @Autowired
+    IStudentinfoService iStudentinfoService;
+
+    @Value("${img.filePath}")
+    String imgFilePath;
     /**
      * @return java.util.List<com.hy.traffic.studentInfo.entity.Studentinfo>
      * @Author zhangduo
@@ -148,6 +160,9 @@ public class StudentinfoController {
                 info.setMessage("登录失败");
                 return info;
             }
+        }else {
+            info.setCode(400);
+            info.setMessage("账号或密码错误");
         }
         return info;
     }
@@ -165,6 +180,53 @@ public class StudentinfoController {
             info.setMessage("修改失败");
         }
         return info;
+    }
+
+    //添加页面——上传文件
+    @RequestMapping(value = "uploadFile")
+    public Upload uploadFile(@RequestParam("file") MultipartFile file, HttpServletRequest request,String cardId) {/**/
+        // 设置名称，不能重复，可以使用uuid
+        String picName = UUID.randomUUID().toString();
+        // 获取文件名
+        String oriName = file.getOriginalFilename();
+        // 获取后缀
+        String extName = oriName.substring(oriName.lastIndexOf("."));
+        String req="";
+
+        Upload up = new Upload();
+        up.setCode("0");
+
+        try {
+            //获取根路径
+            req = request.getSession().getServletContext().getRealPath("/");
+            //subReq=req.substring(0,31);
+            // 开始上传
+            File files =new File(req + "imgs/");
+            //如果文件夹不存在则创建
+            if  (!files .exists()  && !files .isDirectory())
+            {
+                System.out.println("//不存在");
+                files.mkdir();
+            } else
+            {
+                System.out.println("//目录存在");
+            }
+            file.transferTo(new File(req + "imgs/" + picName + extName));
+            QueryWrapper queryWrapper=new QueryWrapper();
+            queryWrapper.eq("cardId",cardId);
+            List<Studentinfo> studentinfos = iStudentinfoService.list(queryWrapper);
+            if (studentinfos.size() > 0) {
+                Studentinfo studentinfo = studentinfos.get(0);
+                studentinfo.setHeadImg(imgFilePath + picName + extName);
+                iStudentinfoService.updateById(studentinfo);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            up.setCode("400");
+        }
+        up.setFilename(imgFilePath +picName + extName);
+        return up;
     }
 
 }
