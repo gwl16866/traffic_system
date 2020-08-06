@@ -179,15 +179,15 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     /**
      * 根据培训id查旗下视频
      */
-    @Select("SELECT cl.`oneTitle`,cl.`id`,cl.`vedio`,cl.`vedioTime`,lv.`status` FROM  saftyclass sc,lookvediodetails lv,classdetails cl WHERE sc.`classId`=lv.`classId` AND cl.`id`=sc.`classId` " +
-            " AND sc.`saftyId`=#{trainId}")
-    public  List<TrainVedio> queryVedioByTrainId(Integer trainId);
+    @Select("SELECT cl.`oneTitle`,cl.`id`,cl.`vedio`,cl.`vedioTime`,lv.playTime,lv.`status` FROM  saftyclass sc,lookvediodetails lv,classdetails cl WHERE sc.`classId`=lv.`classId` AND cl.`id`=sc.`classId` " +
+            " AND sc.`saftyId`=#{trainId} and studentId=#{stuId}")
+    public  List<TrainVedio> queryVedioByTrainId(Integer trainId,Integer stuId);
 
 
     /**
      * 根据学生id 查询他参加的培训
      */
-    @Select("SELECT s.id,s.`theme`,s.`startTime`,s.`endTime`,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
+    @Select("SELECT s.id,s.`theme`,date_format(s.`startTime`, '%Y-%m-%d') startTime,date_format(s.`endTime`, '%Y-%m-%d') endTime,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
     public List<TrainRecord> queryTrainRecord(Integer id,String year);
 
 
@@ -219,6 +219,16 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      */
     @Update("update lookvediodetails set status=2 where classid=#{vedioId} and studentid=#{stuId} and saftyeduId=#{trainId}")
     public Integer updateVedioStatus(Integer trainId,Integer stuId,Integer vedioId);
+
+    /**
+     * 修改视频播放时长
+     * @param trainId
+     * @param stuId
+     * @param vedioId
+     * @return
+     */
+    @Update("update lookvediodetails set playTime=#{playTime} where classid=#{vedioId} and studentid=#{stuId} and saftyeduId=#{trainId}")
+    public Integer updateVedioPlayTime(Integer trainId,Integer stuId,Integer vedioId,Integer playTime);
 
     /**
      * 根据培训id  查询题目

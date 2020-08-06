@@ -28,8 +28,7 @@ public class DocumentController {
     @Autowired
     private IDocumentService iDocumentService;
 
-    @Autowired
-    private DocumentMapper documentMapper;
+
 
     @RequestMapping("/queryDocument")
     public PageJson queryDocument(Integer currpage, Integer pagesize,PageJson pageJson){

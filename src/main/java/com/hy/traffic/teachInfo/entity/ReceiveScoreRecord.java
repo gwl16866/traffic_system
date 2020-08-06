@@ -11,5 +11,6 @@ public class ReceiveScoreRecord implements Serializable {
     private Integer stuId;
     private String startTime;
     private String endTime;
+    private String stuIds;
 
 }
