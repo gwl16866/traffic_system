@@ -197,7 +197,7 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      * @param stuId
      * @return
      */
-    @Select("SELECT startTime,endTime,STATUS,score FROM answerrecord WHERE saftyid=#{saftyId} AND stuid =#{stuId}")
+    @Select("SELECT startTime,endTime,STATUS,score FROM answerrecord WHERE saftyid=#{saftyId} AND stuid =#{stuId} order by startTime desc")
     public List<AnswerRecord> queryAnswerRecord(Integer saftyId,Integer stuId);
 
 
