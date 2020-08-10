@@ -284,7 +284,7 @@ public class TeachinfoController {
      * @return
      */
     @RequestMapping("testScore")
-    public Integer testScore(@RequestBody Map map) {
+    public ExamScoreAndError testScore(@RequestBody Map map) {
 
         ExamObject result = JSONObject.parseObject(JSONObject.toJSONString(map), ExamObject.class);
 
@@ -295,7 +295,6 @@ public class TeachinfoController {
         if (studentinfos.size() > 0) {
             result.getReceiveScoreRecord().setStuId(studentinfos.get(0).getId());
         }
-
         return teachinfoService.testScore(result);
     }
 

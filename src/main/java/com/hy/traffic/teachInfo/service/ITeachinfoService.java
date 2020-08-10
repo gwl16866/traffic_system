@@ -34,7 +34,7 @@ public interface ITeachinfoService extends IService<Teachinfo> {
   public StudentInfos queryStuInfor(String carId);
   public Integer updateVedioStatus(Integer trainId,String cardId,Integer vedioId);
   public List<examQuestion> queryExamQuestion(Integer trainId);
-  public Integer testScore(ExamObject object);
+  public ExamScoreAndError testScore(ExamObject object);
   Integer updateVedioPlayTime(Integer trainId, String cardId, Integer vedioId,Integer playTime);
 
 

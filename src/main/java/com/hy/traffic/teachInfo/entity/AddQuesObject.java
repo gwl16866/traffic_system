@@ -7,9 +7,7 @@ import java.util.List;
 
 @Data
 public class AddQuesObject implements Serializable {
-//    private String classId;
-//    private String zhangs;
-//    private String jies;
+
     private Integer id;
     private String xiaojies;
     private String a;

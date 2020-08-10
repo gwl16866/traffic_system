@@ -228,13 +228,16 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
-    public Integer testScore(ExamObject object) {
+    public ExamScoreAndError testScore(ExamObject object) {
         //提交的答案  和  id
         List<ReceiveQuestionList> questions = object.getList();
         List<AnswerFiveObj> answerList = new ArrayList<>();
+        List<ErrorQuestionDetails> errorDetails=new ArrayList<>();
         for (int i = 0; i < questions.size(); i++) {
             //答案
           String answer = mapper.queryTrueAnswer(questions.get(i).getQuestionId());
+          String title = mapper.queryquestionTitle(questions.get(i).getQuestionId());
+          String ops = mapper.queryOptions(questions.get(i).getQuestionId());
             //new 出每条记录
             AnswerFiveObj fiveObj=new AnswerFiveObj();
             fiveObj.setQuestionId(questions.get(i).getQuestionId());
@@ -244,6 +247,13 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
               fiveObj.setScore(10);
           }else{
               fiveObj.setScore(0);
+              //new出错题对象
+              ErrorQuestionDetails err=new ErrorQuestionDetails();
+              err.setTitle(title);
+              err.setOption(ops);
+              err.setFalseAnswer(questions.get(i).getAnswer());
+              err.setTrueAnswer(answer);
+              errorDetails.add(err);
           }
             answerList.add(fiveObj);
         }
@@ -268,8 +278,11 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
              re2 = mapper.insertExamDetail(answerList.get(a).getQuestionId(),
                     answerList.get(a).getAnswer(),id,answerList.get(a).getTrueAnswer());
         }
+        ExamScoreAndError obj= new ExamScoreAndError();
         if(re>0 && re2>0){
-            return s;
+            obj.setScore(s);
+            obj.setErrorQuestionDetails(errorDetails);
+            return obj;
         }else {
             return null;
         }

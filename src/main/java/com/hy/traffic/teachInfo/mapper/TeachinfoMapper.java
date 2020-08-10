@@ -247,6 +247,23 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     public String queryTrueAnswer(Integer qid);
 
     /**
+     * 根据题目id查标题
+     * @param qid
+     * @return
+     */
+    @Select("SELECT questionTitle FROM questionsmanager WHERE id=#{qid}")
+    public String queryquestionTitle(Integer qid);
+
+    /**
+     * 根据题目id查选项
+     * @param qid
+     * @return
+     */
+    @Select("SELECT options FROM questionsmanager WHERE id=#{qid}")
+    public String queryOptions(Integer qid);
+
+
+    /**
      * 查询过关分数
      * @param id
      * @return
