@@ -244,7 +244,6 @@ public class TeachinfoController {
     @RequestMapping("updateVedioStatus")
     public Integer updateVedioStatus(Integer trainId,String cardId,Integer vedioId){
         Integer ok = teachinfoService.updateVedioStatus(trainId,cardId,vedioId);
-        System.out.println(ok);
         if (null != ok && ok >0){
             return 1;
         }else {

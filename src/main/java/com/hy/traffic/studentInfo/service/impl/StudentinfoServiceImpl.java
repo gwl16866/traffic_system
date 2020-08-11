@@ -10,6 +10,7 @@ import com.hy.traffic.studentInfo.mapper.AnswerMapper;
 import com.hy.traffic.studentInfo.mapper.StudentinfoMapper;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
 import com.hy.traffic.studentInfo.utils.ReturnJson;
+import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -43,6 +44,8 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
     @Autowired
     AnswerMapper answerMapper;
 
+    @Autowired
+    private TeachinfoMapper mapper;
     /**
      * @Author zhangduo
      * @Description //TODO 根据条件查询所有学员信息
@@ -214,7 +217,8 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
     }
 
     public void updatePassword(Integer id,String password){
-         studentinfoMapper.updatePassword(id, password);
+        Integer ids = mapper.queryIdByCarId(String.valueOf(id));
+         studentinfoMapper.updatePassword(ids, password);
     }
 
     public List<Studentxiangqing> studentxiangqing(Integer id){

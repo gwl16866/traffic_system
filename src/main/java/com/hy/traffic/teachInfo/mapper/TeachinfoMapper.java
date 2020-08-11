@@ -145,7 +145,7 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      * @param id
      * @return
      */
-    @Select("SELECT s.`id`,s.`theme` FROM  saftyedu s,saftydustudentinfo si,studentinfo stu WHERE s.`id`=si.`saftyId` AND stu.`id`=si.`stuId` AND stu.`cardId`=#{id}")
+    @Select("SELECT s.`id`,s.`theme` FROM  saftyedu s,saftydustudentinfo si,studentinfo stu WHERE s.`id`=si.`saftyId` AND stu.`id`=si.`stuId` AND stu.`cardId`=#{id} and s.status=1")
     public List<SaftyInfos> queryTrainList(String id);
 
     /**
@@ -179,15 +179,16 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     /**
      * 根据培训id查旗下视频
      */
-    @Select("SELECT cl.`oneTitle`,cl.`id`,cl.`vedio`,cl.`vedioTime`,lv.playTime,lv.`status` FROM  saftyclass sc,lookvediodetails lv,classdetails cl WHERE sc.`classId`=lv.`classId` AND cl.`id`=sc.`classId` " +
-            " AND sc.`saftyId`=#{trainId} and studentId=#{stuId}")
+    @Select("select DISTINCT a.`oneTitle`,a.`id`,a.`vedio`,a.`vedioTime`,a.`saftyId`,b.playTime,b.`status` FROM (SELECT  cl.`oneTitle`,cl.`id`,cl.`vedio`,cl.`vedioTime`,sc.`saftyId` from  saftyclass sc,classdetails cl  WHERE cl.`id`=sc.`classId` and sc.`saftyId`=#{trainId}) a" +
+            ",(SELECT * FROM lookvediodetails WHERE studentId=#{stuId} and  saftyeduId=#{trainId}) b " +
+            "where  a.id=b.classId  " )
     public  List<TrainVedio> queryVedioByTrainId(Integer trainId,Integer stuId);
 
 
     /**
      * 根据学生id 查询他参加的培训
      */
-    @Select("SELECT s.id,s.`theme`,date_format(s.`startTime`, '%Y-%m-%d') startTime,date_format(s.`endTime`, '%Y-%m-%d') endTime,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
+    @Select("SELECT s.id,s.`theme`,date_format(s.`startTime`, '%Y.%m.%d') startTime,date_format(s.`endTime`, '%Y.%m.%d') endTime,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
     public List<TrainRecord> queryTrainRecord(Integer id,String year);
 
 
@@ -219,6 +220,26 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      */
     @Update("update lookvediodetails set status=2 where classid=#{vedioId} and studentid=#{stuId} and saftyeduId=#{trainId}")
     public Integer updateVedioStatus(Integer trainId,Integer stuId,Integer vedioId);
+
+    /**
+     * 根据学生和培训id查询所有视频是否已看完
+     * @param sid
+     * @param tid
+     * @return
+     */
+    @Select("select count(*) from lookvediodetails where studentid=#{sid} and saftyeduid=#{tid} and status =1")
+    public Integer updateComplete(Integer sid,Integer tid);
+
+    /**
+     * 修改培训状态
+     * @param sid
+     * @param tid
+     * @return
+     */
+    @Update("update saftydustudentinfo set completion=2 where saftyid=#{tid} and stuid=#{sid}")
+    public Integer updateEduStatus(Integer sid,Integer tid);
+
+
 
     /**
      * 修改视频播放时长

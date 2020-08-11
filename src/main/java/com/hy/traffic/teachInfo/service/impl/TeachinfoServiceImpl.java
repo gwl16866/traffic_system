@@ -212,7 +212,16 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     public Integer updateVedioStatus(Integer trainId, String cardId, Integer vedioId) {
         Integer id = mapper.queryIdByCarId(cardId);
         Integer ids = mapper.updateVedioStatus(trainId,id,vedioId);
-        return ids;
+        Integer allOk = mapper.updateComplete(id,trainId);
+        Integer ok=0;
+        if(allOk == 0){
+         ok =  mapper.updateEduStatus(id,trainId);
+        }
+        if(ok >0 && ids >0){
+            return 1;
+        }else{
+            return 0;
+        }
     }
 
     @Override

@@ -7,7 +7,7 @@ server:
 spring:
   datasource:
     username: root
-    password: root
+    password: 123456
     url: jdbc:mysql://127.0.0.1:3306/traffic?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 
