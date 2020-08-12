@@ -196,11 +196,7 @@ public class Statistics {
                 }
             }
 
-            for (Integer integer : acList) {
-                System.out.println("怎么回事："+integer);
-            }
 
-            System.out.println("成功与否"+acList.size());
 
             for (Integer integer : acList) {
                 Studentxiangqing studentxiangqing=studentinfoService.stuentmq(integer,aaa,realName);
@@ -210,7 +206,18 @@ public class Statistics {
             }
 
             for (Studentxiangqing studentxiangqing : list) {
-                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                String totalTimeStr = "";
+
+                if(totalTime>=60 && totalTime<=3600){
+                    totalTimeStr = totalTime/60 + "分" + (totalTime%60) + "秒" ;
+                }else if(totalTime>3600){
+                    totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
+                }
+                else if(totalTime>0&& totalTime<60){
+                    totalTimeStr = totalTime+ "秒" ;
+                }
+                studentxiangqing.setPlaytime(totalTimeStr);
             }
 
         }else if(radio==2){
@@ -221,7 +228,18 @@ public class Statistics {
                 }
             }
             for (Studentxiangqing studentxiangqing : list) {
-                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                String totalTimeStr = "";
+
+                if(totalTime>=60 && totalTime<=3600){
+                    totalTimeStr = totalTime/60 + "分" + (totalTime%60) + "秒" ;
+                }else if(totalTime>3600){
+                    totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
+                }
+                else if(totalTime>0&& totalTime<60){
+                    totalTimeStr = totalTime+ "秒" ;
+                }
+                studentxiangqing.setPlaytime(totalTimeStr);
             }
 
         }else if(radio==3){
@@ -267,9 +285,19 @@ public class Statistics {
             }
 
             for (Studentxiangqing studentxiangqing : list) {
-                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
-            }
+                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                String totalTimeStr = "";
 
+                if(totalTime>=60 && totalTime<=3600){
+                    totalTimeStr = totalTime/60 + "分" + (totalTime%60) + "秒" ;
+                }else if(totalTime>3600){
+                    totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
+                }
+                else if(totalTime>0&& totalTime<60){
+                    totalTimeStr = totalTime+ "秒" ;
+                }
+                studentxiangqing.setPlaytime(totalTimeStr);
+            }
 
       }else if(radio==4){
 
@@ -280,7 +308,18 @@ public class Statistics {
             }
 
             for (Studentxiangqing studentxiangqing : list) {
-                studentxiangqing.setPlaytime(studentinfoService.querySumPlayTime(id,studentxiangqing.getId()));
+                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                String totalTimeStr = "";
+
+                if(totalTime>=60 && totalTime<=3600){
+                    totalTimeStr = totalTime/60 + "分" + (totalTime%60) + "秒" ;
+                }else if(totalTime>3600){
+                    totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
+                }
+                else if(totalTime>0&& totalTime<60){
+                    totalTimeStr = totalTime+ "秒" ;
+                }
+                studentxiangqing.setPlaytime(totalTimeStr);
             }
 
         }
