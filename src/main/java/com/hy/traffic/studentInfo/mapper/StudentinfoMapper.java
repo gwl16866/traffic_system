@@ -63,7 +63,7 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     @SelectProvider(type = Provider.class, method = "stuentmq")
     public Studentxiangqing stuentmq(Integer id,String aaa,String realName);
 
-    @Select("SELECT SUM(playTime)/60 FROM lookvediodetails where studentid=#{studentId} and saftyeduId=#{saftyId}")
+    @Select("SELECT SUM(playTime) FROM lookvediodetails where studentid=#{studentId} and saftyeduId=#{saftyId}")
     public Integer querySumPlayTime(Integer saftyId,Integer studentId);
 
 

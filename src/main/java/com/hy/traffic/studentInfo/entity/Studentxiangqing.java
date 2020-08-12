@@ -86,7 +86,7 @@ public class Studentxiangqing {
     private Integer score;
 
     @TableField(exist = false)
-    private  Integer playtime;
+    private  String playtime;
 
 
 
