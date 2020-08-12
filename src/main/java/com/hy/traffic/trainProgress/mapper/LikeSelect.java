@@ -16,9 +16,10 @@ public class LikeSelect {
         return sql.toString();
     }
     public String queryAllProperAndOkProper(String YearMonth){
-        StringBuilder sql=new StringBuilder("SELECT alls.allProper,ok.okProper FROM \n" +
-                "(SELECT a.id, IFNULL(COUNT(1),0) allProper FROM `saftyedu` a LEFT JOIN `saftydustudentinfo` b ON a.`id`=b.`saftyId` WHERE a.`startTime` LIKE '"+YearMonth+"%')alls,\n" +
-                "(SELECT a.id, IFNULL(COUNT(1),0) okProper FROM `saftyedu` a LEFT JOIN `saftydustudentinfo` b ON a.`id`=b.`saftyId` WHERE b.`completion`=2 AND a.startTime LIKE '"+YearMonth+"%')ok WHERE alls.id=ok.id OR alls.id IS NULL");
+        StringBuilder sql=new StringBuilder("select \n" +
+                "(SELECT IFNULL(COUNT(1),0) allProper FROM `saftyedu` a LEFT JOIN `saftydustudentinfo` b ON a.`id`=b.`saftyId` WHERE a.`startTime` LIKE '"+YearMonth+"%') allProper,\n" +
+                "(SELECT IFNULL(COUNT(1),0) okProper FROM `saftyedu` a LEFT JOIN `saftydustudentinfo` b ON a.`id`=b.`saftyId` WHERE b.`completion`=2 AND a.startTime LIKE '"+YearMonth+"%') okProper\n" +
+                "from DUAL;");
         return sql.toString();
     }
     public String queryAllPeiXunClass(Integer Id){
