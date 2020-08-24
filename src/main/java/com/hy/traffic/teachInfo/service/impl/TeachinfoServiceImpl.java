@@ -5,6 +5,7 @@ import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -13,6 +14,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -26,6 +28,8 @@ import java.util.List;
 public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo> implements ITeachinfoService {
     @Autowired
     private TeachinfoMapper mapper;
+    @Value("${img.vedioPath}")
+    private String vedioPath;
 
     @Override
     public List<Teachinfo> queryAllTeachinfo() {
@@ -187,7 +191,12 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     @Override
     public List<TrainVedio> queryVedioByTrainId(Integer trainId,String cardId) {
         Integer id = mapper.queryIdByCarId(cardId);
-        return mapper.queryVedioByTrainId(trainId,id);
+        List<TrainVedio> list=mapper.queryVedioByTrainId(trainId,id);
+        list=list.stream().map(e->{
+            e.setVedio(vedioPath+e.getVedio());
+            return e;
+        }).collect(Collectors.toList());
+        return list;
     }
 
     @Override

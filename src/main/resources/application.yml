@@ -2,12 +2,14 @@ server:
   tomcat:
     uri-encoding: utf-8
   port: 8081
+  servlet:
+    context-path: /traffic
 
 
 spring:
   datasource:
     username: root
-    password: root
+    password: a7891ba01f45e28a
     url: jdbc:mysql://127.0.0.1:3306/traffic?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 
@@ -18,9 +20,10 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 img:
-    filePath: http://localhost:8081/imgs/
+    file: /jiaotong/data/
+    filePath: http://47.114.1.9/imgs/
+    vedioPath: http://47.114.1.9/vedio/
 
-
-
-
-
+logging:
+  file:
+    path: /jiaotong/data/logs

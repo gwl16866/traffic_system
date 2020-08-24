@@ -17,6 +17,7 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -54,6 +56,8 @@ public class SaftyeduController {
 
     @Autowired
     private SaftyeduMapper saftyeduMapper;
+    @Value("${img.vedioPath}")
+    private String vedioPath;
 
     //查询
     @CrossOrigin
@@ -494,6 +498,10 @@ System.out.println(said);
         }
         //查询课程
         List<ClassDetail> classDetailList = saftyeduService.classDetailList(sr.toString());
+        classDetailList=classDetailList.stream().map(e->{
+            e.setVedio(vedioPath+e.getVedio());
+            return e;
+        }).collect(Collectors.toList());
         return classDetailList;
     }
 }

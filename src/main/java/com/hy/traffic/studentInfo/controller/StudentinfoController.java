@@ -42,6 +42,9 @@ public class StudentinfoController {
 
     @Value("${img.filePath}")
     String imgFilePath;
+
+    @Value("${img.file}")
+    String imgFile;
     /**
      * @return java.util.List<com.hy.traffic.studentInfo.entity.Studentinfo>
      * @Author zhangduo
@@ -201,7 +204,7 @@ public class StudentinfoController {
             req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File(req + "imgs/");
+            File files =new File(imgFile + "imgs/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -211,7 +214,7 @@ public class StudentinfoController {
             {
                 System.out.println("//目录存在");
             }
-            file.transferTo(new File(req + "imgs/" + picName + extName));
+            file.transferTo(new File(imgFile + "imgs/" + picName + extName));
             QueryWrapper queryWrapper=new QueryWrapper();
             queryWrapper.eq("cardId",cardId);
             List<Studentinfo> studentinfos = iStudentinfoService.list(queryWrapper);

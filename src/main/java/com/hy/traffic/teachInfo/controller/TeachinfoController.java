@@ -37,6 +37,9 @@ public class TeachinfoController {
 
     @Value("${img.filePath}")
     String imgFilePath;
+
+    @Value("${img.file}")
+    String imgFile;
     /**
      * 查询所有教育课题
      * @return
@@ -139,7 +142,7 @@ public class TeachinfoController {
              req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File(req + "imgs/");
+            File files =new File(imgFile + "imgs/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -149,7 +152,8 @@ public class TeachinfoController {
             {
                 System.out.println("//目录存在");
             }
-            file.transferTo(new File(req + "imgs/" + picName + extName));
+
+            file.transferTo(new File(imgFile + "imgs/" + picName + extName));
         } catch (Exception e) {
             e.printStackTrace();
         }

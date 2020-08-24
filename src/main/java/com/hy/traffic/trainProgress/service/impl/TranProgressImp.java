@@ -10,6 +10,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -17,13 +18,15 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo> implements ITranProgressService {
     @Autowired
     private TrainProgressMapper trainProgressMapper;
-
+    @Value("${img.vedioPath}")
+    private String vedioPath;
 
     /**
      * @Author zhangduo
@@ -119,7 +122,12 @@ public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo>
      * @return
      **/
     public List<Vedio> queryAllPeiXunClass(Integer Id){
-        return trainProgressMapper.queryAllPeiXunClass(Id);
+        List<Vedio> list=trainProgressMapper.queryAllPeiXunClass(Id);
+        list=list.stream().map(e->{
+            e.setVedio(vedioPath+e.getVedio());
+            return e;
+        }).collect(Collectors.toList());
+        return list;
     };
 
 }
