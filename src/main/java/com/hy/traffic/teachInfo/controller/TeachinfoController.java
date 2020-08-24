@@ -302,6 +302,39 @@ public class TeachinfoController {
     }
 
 
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("deleteTitleById")
+    public Integer deleteTitleById(Integer id){
+        Integer ok =teachinfoService.deleteTitleById(id);
+        if (ok>0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     *
+     * @param id
+     * @param title
+     * @return
+     */
+    @RequestMapping("updateTitle")
+    public Integer updateTitle(Integer id,String title){
+        Integer ok =teachinfoService.updateTitle(id,title);
+        if (ok>0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+
+
 
 
 

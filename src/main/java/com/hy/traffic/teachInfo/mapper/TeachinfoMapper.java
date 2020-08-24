@@ -2,10 +2,7 @@ package com.hy.traffic.teachInfo.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hy.traffic.teachInfo.entity.*;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -320,6 +317,16 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     @Select("select max(id) from answerrecord")
     public Integer queryMaxExamId();
 
+    /**
+     * 删除标题
+     * @param id
+     * @return
+     */
+    @Delete("delete from classdetails where id=#{id} or parentid = #{id}")
+    public Integer deleteTitleById(Integer id);
 
+
+    @Update("update classdetails set onetitle=#{title} where id =#{id}")
+    public Integer updateTitle(Integer id,String title);
 
 }

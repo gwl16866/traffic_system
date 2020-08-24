@@ -241,6 +241,16 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
+    public Integer deleteTitleById(Integer id) {
+        return mapper.deleteTitleById(id);
+    }
+
+    @Override
+    public Integer updateTitle(Integer id, String title) {
+        return mapper.updateTitle(id,title);
+    }
+
+    @Override
     public List<examQuestion> queryExamQuestion(Integer trainId) {
         return mapper.queryExamQuestion(trainId);
     }
