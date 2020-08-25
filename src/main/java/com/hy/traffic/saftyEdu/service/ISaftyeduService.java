@@ -41,6 +41,7 @@ public interface ISaftyeduService extends IService<Saftyedu> {
     public List<Studentinfo> selectAllStu();
     public List<Tree> queryclassDetail();
     public void addSaftyEdu(String theme, String startTime, String endTime, String manager,String testPeople, Integer learnType , String learnTime,Integer passscore);
+    public void addSaftyEducopy(String theme, String startTime, String endTime, String manager, String testPeople, Integer learnType, String learnTime,Integer passscore,String address,String image);
     public Integer selectMaxId();
     public void deleteSaftyedu(Integer id);
     public List<saftyclass> selectlession(Integer id);

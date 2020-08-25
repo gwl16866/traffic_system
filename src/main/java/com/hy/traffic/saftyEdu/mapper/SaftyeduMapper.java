@@ -68,6 +68,9 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
     @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore})")
     public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople,Integer learnType , String learnTime,Integer passscore);
 
+    @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore,address,image) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore},#{address},#{image})")
+    public void addSaftyEducopy(String theme, String startTime, String endTime, String manager, String testPeople,Integer learnType , String learnTime,Integer passscore,String address,String image);
+
     @Select("select max(id) from saftyedu")
     public Integer selectMaxId();
 

@@ -126,7 +126,6 @@ public class SaftyeduController {
         resultData.setData(saftyeduList);
         return resultData;
     }
-
     //批量添加学员
     @CrossOrigin
     @RequestMapping("/batchAddStudent")
@@ -156,8 +155,15 @@ public class SaftyeduController {
     @RequestMapping("/addSaftyEdu")
     public Integer addSaftyEdu(@RequestBody Saftyedutwo addEdu) {
         try {
-            //添加培训
-            saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore());
+            if(addEdu.getLearnType()==1){
+                //添加线上培训
+                saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore());
+            }else if(addEdu.getLearnType()==3){
+                //添加线上+现场培训
+                saftyeduService.addSaftyEducopy(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore(),addEdu.getAddress(),addEdu.getImage());
+            }
+
+
             //查询最大Id(培训id)
             Integer maxId = saftyeduService.selectMaxId();
             StringBuilder sr = new StringBuilder();

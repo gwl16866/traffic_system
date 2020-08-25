@@ -93,8 +93,15 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
     @Override
     public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople, Integer learnType, String learnTime,Integer passscore){
-         saftyeduMapper.addSaftyEdu(theme, startTime, endTime,  manager,testPeople, learnType, learnTime,passscore);
+        saftyeduMapper.addSaftyEdu(theme, startTime, endTime,  manager,testPeople, learnType, learnTime,passscore);
     };
+
+    @Override
+    public void addSaftyEducopy(String theme, String startTime, String endTime, String manager, String testPeople, Integer learnType, String learnTime,Integer passscore,String address,String image){
+        saftyeduMapper.addSaftyEducopy(theme, startTime, endTime,  manager,testPeople, learnType, learnTime,passscore,address,image);
+    };
+
+
 
     @Override
     public Integer selectMaxId(){

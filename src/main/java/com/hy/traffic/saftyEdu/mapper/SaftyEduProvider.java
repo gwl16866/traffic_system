@@ -7,7 +7,7 @@ public class SaftyEduProvider {
         if(learnType == 9){
             sf.append("select * from saftyedu where status !=3 order by id desc");
         }else{
-            sf.append("select * from saftyedu where status !=3 and learnType="+learnType+"order by id desc");
+            sf.append("select * from saftyedu where status !=3 and learnType="+learnType+" order by id desc");
         }
         return  sf.toString();
     }
