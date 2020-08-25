@@ -318,6 +318,22 @@ public class TeachinfoController {
     }
 
     /**
+     * 删除左标题
+     * @param id
+     * @return
+     */
+    @RequestMapping("deleteLeftTitleById")
+    public Integer deleteLeftTitleById(Integer id){
+        Integer ok =teachinfoService.deleteLeftTitleById(id);
+        if (ok>0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+
+    /**
      *
      * @param id
      * @param title
@@ -326,6 +342,22 @@ public class TeachinfoController {
     @RequestMapping("updateTitle")
     public Integer updateTitle(Integer id,String title){
         Integer ok =teachinfoService.updateTitle(id,title);
+        if (ok>0){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+    /**
+     *
+     * @param id
+     * @param title
+     * @return
+     */
+    @RequestMapping("leftUpdateTitle")
+    public Integer leftUpdateTitle(Integer id,String title){
+        Integer ok =teachinfoService.leftUpdateTitle(id,title);
         if (ok>0){
             return 1;
         }else {

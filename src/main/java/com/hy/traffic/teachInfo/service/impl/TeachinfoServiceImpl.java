@@ -246,8 +246,24 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
+    public Integer deleteLeftTitleById(Integer id) {
+        Integer a =mapper.deleteLeftTitleById(id);
+        Integer b =mapper.deleteLeftTitleLessionById(id);
+        if (a>0 && b>0){
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
     public Integer updateTitle(Integer id, String title) {
         return mapper.updateTitle(id,title);
+    }
+
+    @Override
+    public Integer leftUpdateTitle(Integer id, String title) {
+        return mapper.leftUpdateTitle(id,title);
     }
 
     @Override

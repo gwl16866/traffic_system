@@ -325,8 +325,41 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
     @Delete("delete from classdetails where id=#{id} or parentid = #{id}")
     public Integer deleteTitleById(Integer id);
 
+    /**
+     * 删除左标题
+     * @param id
+     * @return
+     */
+    @Delete("delete from teachinfo where id=#{id}")
+    public Integer deleteLeftTitleById(Integer id);
 
+    /**
+     * 删除左标题下的课件
+     * @param id
+     * @return
+     */
+    @Delete("delete from classdetails where classdetails=#{id}")
+    public Integer deleteLeftTitleLessionById(Integer id);
+
+    /**
+     * 修改标题
+     * @param id
+     * @param title
+     * @return
+     */
     @Update("update classdetails set onetitle=#{title} where id =#{id}")
     public Integer updateTitle(Integer id,String title);
+
+
+    /**
+     * 修改左标题
+     * @param id
+     * @param title
+     * @return
+     */
+    @Update("update teachinfo set classtitle=#{title} where id =#{id}")
+    public Integer leftUpdateTitle(Integer id,String title);
+
+
 
 }

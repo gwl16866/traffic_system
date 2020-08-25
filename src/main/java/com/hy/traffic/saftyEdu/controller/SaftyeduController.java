@@ -72,9 +72,7 @@ public class SaftyeduController {
             a.setCount(saftyeduService.selectStudentCount(a.getId()));
             //修改培训状态
             Date date = new Date();
-            if (date.compareTo(a.getStartTime()) > 0 && date.compareTo(a.getEndTime()) < 0) {
-
-            } else {
+            if (date.compareTo(a.getEndTime()) > 0) {
                 a.setStatus(2);
                 saftyeduService.updateStatus(a.getId(), a.getStatus());
             }
