@@ -1,5 +1,6 @@
 package com.hy.traffic.trainProgress.controller;
 
+import com.hy.traffic.studentInfo.utils.ReturnJson;
 import com.hy.traffic.trainProgress.entity.Teachinfo;
 import com.hy.traffic.trainProgress.entity.Vedio;
 import com.hy.traffic.trainProgress.service.impl.TranProgressImp;
@@ -39,6 +40,18 @@ public class TrainProgress {
     public List<Teachinfo> queryThemTable(String Year,String Month){
         return tranProgressImp.queryThemTable(Year,Month);
     };
+
+    /**
+     * @Author zhangduo
+     * @Description //TODO
+     * @Date 15:55 2020/8/25
+     * @Param
+     * @return
+     **/
+    @RequestMapping("deleteTheme")
+    public ReturnJson deleteTheme(Integer ThemeId,String status){
+        return tranProgressImp.deleteTheme(ThemeId,status);
+    }
 
     /**
      * @Author zhangduo

@@ -5,14 +5,14 @@ public class LikeSelect {
 
     public String queryThemTable(String YearMonth){
         StringBuilder sql=new StringBuilder("SELECT zhu.id,zhu.theme,zhu.project,zhu.allProper, IFNULL(ok.okProper,0)okProper ,zhu.startTime,zhu.endTime,zhu.learnType FROM \n" +
-                "(SELECT  a.`id`,a.`theme`,a.`project`, COUNT(1) allProper ,a.`startTime`,a.`endTime`,a.learnType FROM \n" +
+                "(SELECT  a.`id`,a.`theme`,a.`project`, COUNT(1) allProper ,a.`startTime`,a.`endTime`,a.learnType,a.status FROM \n" +
                 "`saftyedu` a LEFT JOIN `saftydustudentinfo` b ON a.`id`=b.`saftyId` WHERE a.`startTime` LIKE '"+YearMonth+"%' GROUP BY a.id\n" +
                 ")zhu LEFT JOIN \n" +
                 "(SELECT c.id,COUNT(1) okProper \n" +
                 "FROM `saftyedu` c LEFT JOIN `saftydustudentinfo` d ON c.`id`=d.`saftyId` \n" +
                 "GROUP BY d.saftyId,d.completion HAVING d.completion=2\n" +
                 ")ok \n" +
-                "ON zhu.id=ok.id");
+                "ON zhu.id=ok.id WHERE zhu.status != 3");
         return sql.toString();
     }
     public String queryAllProperAndOkProper(String YearMonth){
