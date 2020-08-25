@@ -6,12 +6,15 @@ import com.hy.traffic.trainProgress.entity.Vedio;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.SelectProvider;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
 @Mapper
 public interface TrainProgressMapper extends BaseMapper<Teachinfo> {
 
+    @Update("UPDATE saftyedu SET STATUS=#{status} WHERE id=#{ThemeId} ")
+    Integer deleteTheme(Integer ThemeId, String status);
 
     @SelectProvider(type = LikeSelect.class,method = "queryThemTable")
     public List<Teachinfo> queryThemTable(String YearMonth);

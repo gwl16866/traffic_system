@@ -1,6 +1,7 @@
 package com.hy.traffic.trainProgress.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hy.traffic.studentInfo.utils.ReturnJson;
 import com.hy.traffic.trainProgress.entity.Teachinfo;
 import com.hy.traffic.trainProgress.entity.Vedio;
 import com.hy.traffic.trainProgress.mapper.TrainProgressMapper;
@@ -27,6 +28,15 @@ public class TranProgressImp extends ServiceImpl<TrainProgressMapper, Teachinfo>
     private TrainProgressMapper trainProgressMapper;
     @Value("${img.vedioPath}")
     private String vedioPath;
+
+    public ReturnJson deleteTheme(Integer ThemeId, String status){
+       Integer returnInt = trainProgressMapper.deleteTheme(ThemeId, status);
+        if(returnInt>0){
+            return  new ReturnJson(200,"删除成功");
+        }else {
+            return new ReturnJson(400,"删除失败");
+        }
+    }
 
     /**
      * @Author zhangduo
