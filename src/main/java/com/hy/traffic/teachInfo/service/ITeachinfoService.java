@@ -1,8 +1,14 @@
 package com.hy.traffic.teachInfo.service;
 
+import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -13,7 +19,7 @@ import java.util.List;
  * @author gwl
  * @since 2020-07-25
  */
-public interface ITeachinfoService extends IService<Teachinfo> {
+public interface ITeachinfoService extends IService<BatchQuestions> {
 
 
   public List<Teachinfo> queryAllTeachinfo();
@@ -40,4 +46,8 @@ public interface ITeachinfoService extends IService<Teachinfo> {
   public Integer deleteLeftTitleById(Integer id);
   public Integer updateTitle(Integer id,String title);
   public Integer leftUpdateTitle(Integer id,String title);
+  public Workbook exportFile();
+  public List<BatchQuestions> importFile(InputStream inputStream);
+  public Integer  updateQuestionOfTitle(Integer id);
+  public Integer  deleteQuestion(Integer id);
 }

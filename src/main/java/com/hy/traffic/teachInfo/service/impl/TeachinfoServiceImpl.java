@@ -1,17 +1,24 @@
 package com.hy.traffic.teachInfo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +32,7 @@ import java.util.stream.Collectors;
  * @since 2020-07-25
  */
 @Service
-public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo> implements ITeachinfoService {
+public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQuestions> implements ITeachinfoService {
     @Autowired
     private TeachinfoMapper mapper;
     @Value("${img.vedioPath}")
@@ -264,6 +271,63 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     @Override
     public Integer leftUpdateTitle(Integer id, String title) {
         return mapper.leftUpdateTitle(id,title);
+    }
+
+    @Override
+    public Workbook exportFile(){
+        Workbook workbook = new HSSFWorkbook();
+        Sheet workbookSheet = workbook.createSheet("题目集");
+        Row row0 = workbookSheet.createRow(0);
+        row0.createCell(0).setCellValue("题目");
+        row0.createCell(1).setCellValue("类型");
+        row0.createCell(2).setCellValue("选项");
+        row0.createCell(3).setCellValue("答案");
+        return workbook;
+    }
+
+    @Override
+    public List<BatchQuestions> importFile(InputStream inputStream){
+        List<BatchQuestions> mapList = new ArrayList<>();
+        try {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row titleRow = sheet.getRow(0);
+            int num = sheet.getLastRowNum();
+            for (int i = 0; i <num ; i++) {
+                BatchQuestions studentinfo = new BatchQuestions();
+                Row row = sheet.getRow(i+1);
+                for (int j = 0; j <row.getLastCellNum(); j++) {
+                    Cell cell = row.getCell(j);
+                    cell.setCellType(CellType.STRING);
+                    String key = titleRow.getCell(j).getStringCellValue();
+                    String value = cell.getStringCellValue();
+                    System.out.print(key+value);
+                    if(key.equals("题目")){
+                        studentinfo.setQuestionTitle(value);
+                    }else if(key.equals("类型")){
+                        studentinfo.setQuestionType(value);
+                    }else if(key.equals("选项")){
+                        studentinfo.setOptions(value);
+                    }else if(key.equals("答案")){
+                        studentinfo.setAnswer(value);
+                    }
+                }
+                mapList.add(studentinfo);
+            }
+        } catch (IOException | InvalidFormatException e) {
+            e.printStackTrace();
+        }
+        return mapList;
+    }
+
+    @Override
+    public Integer updateQuestionOfTitle(Integer id) {
+        return mapper.updateQuestionOfTitle(id);
+    }
+
+    @Override
+    public Integer deleteQuestion(Integer id) {
+        return mapper.deleteQuestion(id);
     }
 
     @Override

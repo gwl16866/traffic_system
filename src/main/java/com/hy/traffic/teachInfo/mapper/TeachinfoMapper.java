@@ -15,7 +15,7 @@ import java.util.List;
  * @since 2020-07-25
  */
 @Mapper
-public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
+public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
 
 
     /**
@@ -359,6 +359,13 @@ public interface TeachinfoMapper extends BaseMapper<Teachinfo> {
      */
     @Update("update teachinfo set classtitle=#{title} where id =#{id}")
     public Integer leftUpdateTitle(Integer id,String title);
+
+
+    @Update("update questionsmanager set oftitleid = #{id} where oftitleid is null")
+    public Integer updateQuestionOfTitle(Integer id);
+
+    @Delete("delete from questionsmanager where id =#{id}")
+    public Integer deleteQuestion(Integer id);
 
 
 

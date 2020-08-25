@@ -43,7 +43,7 @@ public class TrafficManagerApplication extends SpringBootServletInitializer {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //单个文件最大
-        factory.setMaxFileSize(DataSize.parse("204800KB")); //限制200MB
+        factory.setMaxFileSize(DataSize.parse("512000KB")); //限制500MB
         /// 设置总上传数据总大小
         factory.setMaxRequestSize(DataSize.parse("1024000KB"));
         return factory.createMultipartConfig();
