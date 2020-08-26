@@ -486,7 +486,17 @@ System.out.println(said);
         }
         return 1;
     }
-
+//结束培训
+    @CrossOrigin
+    @RequestMapping("/dianjijieshu")
+    public Integer dianjijieshu(Integer id) {
+        try {
+            saftyeduService.updateStatus(id,2);
+        } catch (Exception e) {
+            return 0;
+        }
+        return 1;
+    }
     //查看课程
     @CrossOrigin
     @RequestMapping("/classDetailList")

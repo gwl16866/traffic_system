@@ -40,4 +40,9 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
 
         return documentMapper.queryById(id);
     }
+
+    @Override
+    public Integer deleteDoc(Integer id) {
+        return documentMapper.deleteDoc(id);
+    }
 }
