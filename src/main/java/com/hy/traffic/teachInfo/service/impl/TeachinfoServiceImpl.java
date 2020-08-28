@@ -341,6 +341,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         List<ReceiveQuestionList> questions = object.getList();
         List<AnswerFiveObj> answerList = new ArrayList<>();
         List<ErrorQuestionDetails> errorDetails=new ArrayList<>();
+        ExamScoreAndError obj= new ExamScoreAndError();
         for (int i = 0; i < questions.size(); i++) {
             //答案
           String answer = mapper.queryTrueAnswer(questions.get(i).getQuestionId());
@@ -375,6 +376,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         if(s>sc){
             status =2;
         }
+        obj.setStatus(status);
         //插入记录  再插入详细
         Integer re = mapper.inserExamRecord(object.getReceiveScoreRecord().getSaftyId(),
                 object.getReceiveScoreRecord().getStuId(),
@@ -386,7 +388,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
              re2 = mapper.insertExamDetail(answerList.get(a).getQuestionId(),
                     answerList.get(a).getAnswer(),id,answerList.get(a).getTrueAnswer());
         }
-        ExamScoreAndError obj= new ExamScoreAndError();
+
         if(re>0 && re2>0){
             obj.setScore(s);
             obj.setErrorQuestionDetails(errorDetails);
