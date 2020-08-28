@@ -9,20 +9,20 @@ server:
 spring:
   datasource:
     username: root
-    password: root #a7891ba01f45e28a
+    password: a7891ba01f45e28a
     url: jdbc:mysql://127.0.0.1:3306/traffic?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 
-
+#  a7891ba01f45e28a
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 img:
     file: /jiaotong/data/
-    filePath: http://47.114.1.9/imgs/
-    vedioPath: http://47.114.1.9/vedio/
+    filePath: https://jiaotong.yaojiapx.cn/imgs/
+    vedioPath: https://jiaotong.yaojiapx.cn/vedio/
 
 logging:
   file:

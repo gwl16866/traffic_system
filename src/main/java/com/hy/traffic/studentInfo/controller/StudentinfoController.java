@@ -151,9 +151,14 @@ public class StudentinfoController {
 
         if (!StringUtils.isEmpty(studentinfo)) {
             if (!StringUtils.isEmpty(studentinfo.getId())) {
+                if(studentinfo.getStatus()!=1){
+                    info.setCode(400);
+                    info.setMessage("账号不可用");
+                    return info;
+                }
                 info.setCode(200);
                 info.setMessage("登录成功");
-                if (StringUtils.isEmpty(studentinfo.getHeadImg())) {
+                if (String.valueOf(studentinfo.getHeadImgStatus()).equals("6")) {
                     info.setMessage("暂无头像");
                 } else {
                     info.setMessage("头像已上传");
@@ -172,7 +177,7 @@ public class StudentinfoController {
 
     //修改密码
     @RequestMapping("updatePassword")
-    public Info updatePassword(Integer cardId, String password) {
+    public Info updatePassword(String cardId, String password) {
         Info info = new Info();
         try {
             studentinfoService.updatePassword(cardId, password);

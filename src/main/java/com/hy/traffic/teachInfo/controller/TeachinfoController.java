@@ -147,7 +147,7 @@ public class TeachinfoController {
              req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File(imgFile + "imgs/");
+            File files =new File(imgFile + "vedio/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -158,13 +158,13 @@ public class TeachinfoController {
                 System.out.println("//目录存在");
             }
 
-            file.transferTo(new File(imgFile + "imgs/" + picName + extName));
+            file.transferTo(new File(imgFile + "vedio/" + picName + extName));
         } catch (Exception e) {
             e.printStackTrace();
         }
         Upload up = new Upload();
         up.setCode("0");
-        up.setFilename(imgFilePath +picName + extName);
+        up.setFilename(picName + extName);
         return up;
     }
 

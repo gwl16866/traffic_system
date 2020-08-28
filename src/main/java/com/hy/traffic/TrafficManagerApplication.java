@@ -1,6 +1,7 @@
 package com.hy.traffic;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -13,6 +14,7 @@ import javax.servlet.MultipartConfigElement;
 
 
 @SpringBootApplication
+@MapperScan("com.hy.traffic.*.mapper")
 public class TrafficManagerApplication extends SpringBootServletInitializer {
 
 

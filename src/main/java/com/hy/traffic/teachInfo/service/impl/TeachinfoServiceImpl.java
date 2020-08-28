@@ -20,6 +20,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,10 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
                     cla.setList(secondList);
                     recursionHands(secondList);
                 }
+                list=list.stream().map(e->{
+                    e.setVedio(vedioPath+e.getVedio());
+                    return e;
+                }).collect(Collectors.toList());
             }
             return list;
     }
@@ -169,7 +174,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
 
     @Override
     public List<OnlineTrain> queryOnlineTrainDetails(String cardId) {
-       List<SaftyInfos> saftyInfos= mapper.queryTrainList(cardId);
+       List<SaftyInfos> saftyInfos= mapper.queryTrainList(cardId,new Date());
        //查询身份证
        Integer id = mapper.queryIdByCarId(cardId);
 
@@ -211,7 +216,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         //学生id
         Integer id =mapper.queryIdByCarId(carId);
         //培训列表
-        List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year);
+        List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year,new Date());
         for (int i = 0; i < recordList.size(); i++) {
             List<AnswerRecord> answerList =  mapper.queryAnswerRecord(recordList.get(i).getId(),id);
             recordList.get(i).setScore(answerList);
@@ -282,6 +287,16 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         row0.createCell(1).setCellValue("类型");
         row0.createCell(2).setCellValue("选项");
         row0.createCell(3).setCellValue("答案");
+        Row row1 = workbookSheet.createRow(1);
+        row1.createCell(0).setCellValue("测试");
+        row1.createCell(1).setCellValue("单选题");
+        row1.createCell(2).setCellValue("A.测试,B.测试1,C.测试2");
+        row1.createCell(3).setCellValue("A");
+        Row row2 = workbookSheet.createRow(2);
+        row2.createCell(0).setCellValue("测试");
+        row2.createCell(1).setCellValue("多选题");
+        row2.createCell(2).setCellValue("A.测试,B.测试1,C.测试2");
+        row2.createCell(3).setCellValue("A,B");
         return workbook;
     }
 
@@ -373,7 +388,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         // 根据培训id查询本次培训过关分数
         Integer sc = mapper.queryScore(object.getReceiveScoreRecord().getSaftyId());
         Integer status=1;
-        if(s>sc){
+        if(s>=sc){
             status =2;
         }
         obj.setStatus(status);

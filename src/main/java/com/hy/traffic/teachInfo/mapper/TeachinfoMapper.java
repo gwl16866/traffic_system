@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.hy.traffic.teachInfo.entity.*;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -142,8 +143,8 @@ public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
      * @param id
      * @return
      */
-    @Select("SELECT s.`id`,s.`theme` FROM  saftyedu s,saftydustudentinfo si,studentinfo stu WHERE s.`id`=si.`saftyId` AND stu.`id`=si.`stuId` AND stu.`cardId`=#{id} and s.status=1")
-    public List<SaftyInfos> queryTrainList(String id);
+    @Select("SELECT s.`id`,s.`theme` FROM  saftyedu s,saftydustudentinfo si,studentinfo stu WHERE s.`id`=si.`saftyId` AND stu.`id`=si.`stuId` AND stu.`cardId`=#{id} and s.status=1 and s.startTime<=#{date}")
+    public List<SaftyInfos> queryTrainList(String id, Date date);
 
     /**
      * 根据身份证查id
@@ -185,8 +186,8 @@ public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
     /**
      * 根据学生id 查询他参加的培训
      */
-    @Select("SELECT s.id,s.`theme`,date_format(s.`startTime`, '%Y.%m.%d') startTime,date_format(s.`endTime`, '%Y.%m.%d') endTime,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year}")
-    public List<TrainRecord> queryTrainRecord(Integer id,String year);
+    @Select("SELECT s.id,s.`theme`,date_format(s.`startTime`, '%Y.%m.%d') startTime,date_format(s.`endTime`, '%Y.%m.%d') endTime,si.`completion` FROM saftyedu s,saftydustudentinfo si WHERE s.`id` =si.`saftyId` AND si.`stuId`=#{id} AND YEAR(startTime)=#{year} and s.startTime<=#{date}")
+    public List<TrainRecord> queryTrainRecord(Integer id,String year,Date date);
 
 
     /**

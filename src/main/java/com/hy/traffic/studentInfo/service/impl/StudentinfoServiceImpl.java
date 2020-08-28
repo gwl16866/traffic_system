@@ -216,7 +216,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         return  studentinfoMapper.selectStudentInfo(cardId,password);
     }
 
-    public void updatePassword(Integer id,String password){
+    public void updatePassword(String id,String password){
         Integer ids = mapper.queryIdByCarId(String.valueOf(id));
          studentinfoMapper.updatePassword(ids, password);
     }
