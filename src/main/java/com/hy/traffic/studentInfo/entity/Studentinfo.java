@@ -84,6 +84,9 @@ public class Studentinfo implements Serializable {
     @TableField("induction")
     private LocalDateTime induction;
 
+    @TableField(exist = false)
+    private Integer stuId;
+
     @TableField("headImgStatus")
     private Integer headImgStatus;
 

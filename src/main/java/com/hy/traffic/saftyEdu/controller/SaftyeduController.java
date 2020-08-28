@@ -56,6 +56,7 @@ public class SaftyeduController {
 
     @Autowired
     private SaftyeduMapper saftyeduMapper;
+
     @Value("${img.vedioPath}")
     private String vedioPath;
 
@@ -130,10 +131,15 @@ public class SaftyeduController {
     @CrossOrigin
     @RequestMapping("/batchAddStudent")
     public Integer batchAddStudent(Integer saftyid, Integer[] batchList) {
+        List<Integer> ids = saftyeduMapper.queryVedioIdBySaftyId(saftyid);
         try {
             for (int i = 0; i < batchList.length; i++) {
                 saftyeduService.batchAddStudent(saftyid, batchList[i]);
+                for (int j = 0; j <ids.size() ; j++) {
+                    saftyeduService.addLook(ids.get(j),batchList[i],saftyid);
+                }
             }
+
         } catch (Exception e) {
             return 0;
         }

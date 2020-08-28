@@ -206,7 +206,8 @@ public class Statistics {
             }
 
             for (Studentxiangqing studentxiangqing : list) {
-                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                System.out.println("========"+studentxiangqing.getId());
+                Integer totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
                 String totalTimeStr = "";
 
                 if(totalTime>=60 && totalTime<=3600){
@@ -214,7 +215,7 @@ public class Statistics {
                 }else if(totalTime>3600){
                     totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
                 }
-                else if(totalTime>0&& totalTime<60){
+                else if(totalTime>=0&& totalTime<60){
                     totalTimeStr = totalTime+ "秒" ;
                 }
                 studentxiangqing.setPlaytime(totalTimeStr);
