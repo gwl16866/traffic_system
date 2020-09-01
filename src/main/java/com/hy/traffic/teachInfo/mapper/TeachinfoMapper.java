@@ -84,8 +84,8 @@ public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
      * @param sb
      * @return
      */
-    @Insert("insert into questionsmanager(oftitleid,questionTitle,questionType,options)values(#{addQuesObject.xiaojies},#{addQuesObject.titles},#{addQuesObject.types},#{sb})")
-    public Integer addQuestionsManager(AddQuesObject addQuesObject,String sb);
+    @Insert("insert into questionsmanager(oftitleid,questionTitle,questionType,options,answer,analyzes)values(#{addQuesObject.xiaojies},#{addQuesObject.titles},#{addQuesObject.types},#{sb},#{duo},#{addQuesObject.analyzes})")
+    public Integer addQuestionsManager(AddQuesObject addQuesObject,String sb,String duo);
 
     /**
      * 插入答案

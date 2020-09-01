@@ -106,21 +106,22 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         sb.append(",");
         sb.append("D."+add.getD());
         //插入问题
-        Integer q = mapper.addQuestionsManager(add,sb.toString());
         add.setId(mapper.maxQid());
+        StringBuilder duo =new StringBuilder();
         if(add.getTypes().equals("单选题")){
-            String dan = add.getDanAnswer();
-            mapper.addQuestionsAnswer(add,dan);
+            duo.append(add.getDanAnswer()) ;
+//            mapper.addQuestionsAnswer(add,dan);
         }else{
-            StringBuilder duo =new StringBuilder();
+
             for (int i = 0; i < add.getDuoAnswer().size(); i++) {
                 duo.append(add.getDuoAnswer().get(i));
                 if(i<add.getDuoAnswer().size()-1){
                     duo.append(",");
                 }
             }
-            mapper.addQuestionsAnswer(add,duo.toString());
+//            mapper.addQuestionsAnswer(add,duo.toString());
         }
+        Integer q = mapper.addQuestionsManager(add,sb.toString(),duo.toString());
         return true;
     }
 
@@ -347,7 +348,14 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
 
     @Override
     public List<examQuestion> queryExamQuestion(Integer trainId) {
-        return mapper.queryExamQuestion(trainId);
+        List<examQuestion> list = mapper.queryExamQuestion(trainId);
+        list = list.stream().map(e -> {
+            if (e.getQuestionType().equals("单选题")) {
+                e.setOptions(new StringBuffer().append(e.getOptions()).append(",").toString());
+            }
+            return e;
+        }).collect(Collectors.toList());
+        return list;
     }
 
     @Override
