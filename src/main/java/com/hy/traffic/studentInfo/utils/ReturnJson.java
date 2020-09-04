@@ -17,4 +17,8 @@ public class ReturnJson {
     private String message;
     private Object data;
 
+    public ReturnJson(Integer code, String message) {
+        this.code = code;
+        this.message = message;
+    }
 }

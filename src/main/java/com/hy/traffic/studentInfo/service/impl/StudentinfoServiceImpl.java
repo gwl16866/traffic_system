@@ -129,11 +129,11 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
             studentinfo.setInduction(LocalDateTime.parse(studentinfo.getInductions().replace("T"," "),dt));
         }
         int boo = studentinfoMapper.updateById(studentinfo);
-        if( boo == 1 ){
-            return new ReturnJson(200,"修改成功",null);
-        }else {
+        if( boo < 1 ){
             return new ReturnJson(400,"修改失败",null);
+
         }
+        return new ReturnJson(200,"修改成功",null);
     }
 
     /**
@@ -185,6 +185,8 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
                         studentinfo.setBusNum(value);
                     }else if(key.equals("联系地址")){
                         studentinfo.setLinkAddress(value);
+                    }else if(key.equals("岗位名称")){
+                        studentinfo.setJobName(value);
                     }
                     studentinfo.setCreateTime(LocalDateTime.now());
                     studentinfo.setStatus(0);
@@ -208,6 +210,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         row0.createCell(2).setCellValue("联系电话");
         row0.createCell(3).setCellValue("车牌号码");
         row0.createCell(4).setCellValue("联系地址");
+        row0.createCell(5).setCellValue("岗位名称");
         return workbook;
     }
 
