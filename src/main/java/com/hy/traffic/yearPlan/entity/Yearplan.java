@@ -1,7 +1,9 @@
 package com.hy.traffic.yearPlan.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -16,47 +18,22 @@ import java.io.Serializable;
  * @since 2020-07-25
  */
 @Data
+@TableName("yearplan")
 public class Yearplan implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @TableField("title")
     private String title;
 
+    @TableField("bodys")
     private String bodys;
 
+    @TableField(exist = false)
     private String createTime;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getBodys() {
-        return bodys;
-    }
-
-    public void setBodys(String bodys) {
-        this.bodys = bodys;
-    }
-
-    public String getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
-    }
 }

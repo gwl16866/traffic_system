@@ -53,6 +53,7 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
     //批量添加学员
     @Insert("insert into saftydustudentinfo (saftyId,stuId,completion) values(#{saftyid},#{studentid},1)")
     public void batchAddStudent(Integer saftyid, Integer studentid);
+
     @Insert("insert into lookvediodetails(classId,studentId,status,saftyeduId) values(#{classid},#{studentid},1,#{saftyeduid})")
     public void addLook(Integer classid,Integer studentid,Integer saftyeduid);
 
@@ -67,6 +68,9 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
 
     @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore})")
     public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople,Integer learnType , String learnTime,Integer passscore);
+
+    @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore,address,image) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore},#{address},#{image})")
+    public void addSaftyEducopy(String theme, String startTime, String endTime, String manager, String testPeople,Integer learnType , String learnTime,Integer passscore,String address,String image);
 
     @Select("select max(id) from saftyedu")
     public Integer selectMaxId();
@@ -85,5 +89,8 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
 
     @SelectProvider(type =MqBean.class,method = "num")
     public List<Saftyedu> num(String time,Integer learnType);
+
+    @Select("SELECT classid FROM saftyclass WHERE saftyid=#{saftyId}")
+    public List<Integer> queryVedioIdBySaftyId(Integer saftyId);
 
 }

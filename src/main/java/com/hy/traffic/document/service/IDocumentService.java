@@ -17,5 +17,6 @@ public interface IDocumentService extends IService<Document> {
     PageJson querydocument(Integer currpage, Integer pagesize, PageJson pageJson);
 
     Document queryById(Integer id);
+    Integer deleteDoc(Integer id);
 
 }

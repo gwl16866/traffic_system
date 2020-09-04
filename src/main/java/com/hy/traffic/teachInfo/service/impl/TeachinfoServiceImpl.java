@@ -1,18 +1,26 @@
 package com.hy.traffic.teachInfo.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +33,7 @@ import java.util.stream.Collectors;
  * @since 2020-07-25
  */
 @Service
-public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo> implements ITeachinfoService {
+public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQuestions> implements ITeachinfoService {
     @Autowired
     private TeachinfoMapper mapper;
     @Value("${img.vedioPath}")
@@ -52,6 +60,10 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
                     cla.setList(secondList);
                     recursionHands(secondList);
                 }
+                list=list.stream().map(e->{
+                    e.setVedio(vedioPath+e.getVedio());
+                    return e;
+                }).collect(Collectors.toList());
             }
             return list;
     }
@@ -94,21 +106,22 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         sb.append(",");
         sb.append("D."+add.getD());
         //插入问题
-        Integer q = mapper.addQuestionsManager(add,sb.toString());
         add.setId(mapper.maxQid());
+        StringBuilder duo =new StringBuilder();
         if(add.getTypes().equals("单选题")){
-            String dan = add.getDanAnswer();
-            mapper.addQuestionsAnswer(add,dan);
+            duo.append(add.getDanAnswer()) ;
+//            mapper.addQuestionsAnswer(add,dan);
         }else{
-            StringBuilder duo =new StringBuilder();
+
             for (int i = 0; i < add.getDuoAnswer().size(); i++) {
                 duo.append(add.getDuoAnswer().get(i));
                 if(i<add.getDuoAnswer().size()-1){
                     duo.append(",");
                 }
             }
-            mapper.addQuestionsAnswer(add,duo.toString());
+//            mapper.addQuestionsAnswer(add,duo.toString());
         }
+        Integer q = mapper.addQuestionsManager(add,sb.toString(),duo.toString());
         return true;
     }
 
@@ -162,7 +175,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
 
     @Override
     public List<OnlineTrain> queryOnlineTrainDetails(String cardId) {
-       List<SaftyInfos> saftyInfos= mapper.queryTrainList(cardId);
+       List<SaftyInfos> saftyInfos= mapper.queryTrainList(cardId,new Date());
        //查询身份证
        Integer id = mapper.queryIdByCarId(cardId);
 
@@ -204,7 +217,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         //学生id
         Integer id =mapper.queryIdByCarId(carId);
         //培训列表
-        List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year);
+        List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year,new Date());
         for (int i = 0; i < recordList.size(); i++) {
             List<AnswerRecord> answerList =  mapper.queryAnswerRecord(recordList.get(i).getId(),id);
             recordList.get(i).setScore(answerList);
@@ -267,8 +280,82 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
     }
 
     @Override
+    public Workbook exportFile(){
+        Workbook workbook = new HSSFWorkbook();
+        Sheet workbookSheet = workbook.createSheet("题目集");
+        Row row0 = workbookSheet.createRow(0);
+        row0.createCell(0).setCellValue("题目");
+        row0.createCell(1).setCellValue("类型");
+        row0.createCell(2).setCellValue("选项");
+        row0.createCell(3).setCellValue("答案");
+        Row row1 = workbookSheet.createRow(1);
+        row1.createCell(0).setCellValue("测试");
+        row1.createCell(1).setCellValue("单选题");
+        row1.createCell(2).setCellValue("A.测试,B.测试1,C.测试2");
+        row1.createCell(3).setCellValue("A");
+        Row row2 = workbookSheet.createRow(2);
+        row2.createCell(0).setCellValue("测试");
+        row2.createCell(1).setCellValue("多选题");
+        row2.createCell(2).setCellValue("A.测试,B.测试1,C.测试2");
+        row2.createCell(3).setCellValue("A,B");
+        return workbook;
+    }
+
+    @Override
+    public List<BatchQuestions> importFile(InputStream inputStream){
+        List<BatchQuestions> mapList = new ArrayList<>();
+        try {
+            Workbook workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row titleRow = sheet.getRow(0);
+            int num = sheet.getLastRowNum();
+            for (int i = 0; i <num ; i++) {
+                BatchQuestions studentinfo = new BatchQuestions();
+                Row row = sheet.getRow(i+1);
+                for (int j = 0; j <row.getLastCellNum(); j++) {
+                    Cell cell = row.getCell(j);
+                    cell.setCellType(CellType.STRING);
+                    String key = titleRow.getCell(j).getStringCellValue();
+                    String value = cell.getStringCellValue();
+                    System.out.print(key+value);
+                    if(key.equals("题目")){
+                        studentinfo.setQuestionTitle(value);
+                    }else if(key.equals("类型")){
+                        studentinfo.setQuestionType(value);
+                    }else if(key.equals("选项")){
+                        studentinfo.setOptions(value);
+                    }else if(key.equals("答案")){
+                        studentinfo.setAnswer(value);
+                    }
+                }
+                mapList.add(studentinfo);
+            }
+        } catch (IOException | InvalidFormatException e) {
+            e.printStackTrace();
+        }
+        return mapList;
+    }
+
+    @Override
+    public Integer updateQuestionOfTitle(Integer id) {
+        return mapper.updateQuestionOfTitle(id);
+    }
+
+    @Override
+    public Integer deleteQuestion(Integer id) {
+        return mapper.deleteQuestion(id);
+    }
+
+    @Override
     public List<examQuestion> queryExamQuestion(Integer trainId) {
-        return mapper.queryExamQuestion(trainId);
+        List<examQuestion> list = mapper.queryExamQuestion(trainId);
+        list = list.stream().map(e -> {
+            if (e.getQuestionType().equals("单选题")) {
+                e.setOptions(new StringBuffer().append(e.getOptions()).append(",").toString());
+            }
+            return e;
+        }).collect(Collectors.toList());
+        return list;
     }
 
     @Override
@@ -277,6 +364,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         List<ReceiveQuestionList> questions = object.getList();
         List<AnswerFiveObj> answerList = new ArrayList<>();
         List<ErrorQuestionDetails> errorDetails=new ArrayList<>();
+        ExamScoreAndError obj= new ExamScoreAndError();
         for (int i = 0; i < questions.size(); i++) {
             //答案
           String answer = mapper.queryTrueAnswer(questions.get(i).getQuestionId());
@@ -308,9 +396,10 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
         // 根据培训id查询本次培训过关分数
         Integer sc = mapper.queryScore(object.getReceiveScoreRecord().getSaftyId());
         Integer status=1;
-        if(s>sc){
+        if(s>=sc){
             status =2;
         }
+        obj.setStatus(status);
         //插入记录  再插入详细
         Integer re = mapper.inserExamRecord(object.getReceiveScoreRecord().getSaftyId(),
                 object.getReceiveScoreRecord().getStuId(),
@@ -322,7 +411,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, Teachinfo
              re2 = mapper.insertExamDetail(answerList.get(a).getQuestionId(),
                     answerList.get(a).getAnswer(),id,answerList.get(a).getTrueAnswer());
         }
-        ExamScoreAndError obj= new ExamScoreAndError();
+
         if(re>0 && re2>0){
             obj.setScore(s);
             obj.setErrorQuestionDetails(errorDetails);

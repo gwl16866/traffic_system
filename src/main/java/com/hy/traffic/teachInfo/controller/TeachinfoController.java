@@ -6,15 +6,20 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
+import com.hy.traffic.studentInfo.utils.ReturnJson;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -142,7 +147,7 @@ public class TeachinfoController {
              req = request.getSession().getServletContext().getRealPath("/");
             //subReq=req.substring(0,31);
             // 开始上传
-            File files =new File(imgFile + "imgs/");
+            File files =new File(imgFile + "vedio/");
             //如果文件夹不存在则创建
             if  (!files .exists()  && !files .isDirectory())
             {
@@ -153,13 +158,13 @@ public class TeachinfoController {
                 System.out.println("//目录存在");
             }
 
-            file.transferTo(new File(imgFile + "imgs/" + picName + extName));
+            file.transferTo(new File(imgFile + "vedio/" + picName + extName));
         } catch (Exception e) {
             e.printStackTrace();
         }
         Upload up = new Upload();
         up.setCode("0");
-        up.setFilename(imgFilePath +picName + extName);
+        up.setFilename(picName + extName);
         return up;
     }
 
@@ -363,6 +368,64 @@ public class TeachinfoController {
         }else {
             return 0;
         }
+    }
+
+    /**
+     * @return
+     * @Author zhangduo
+     * @Description //TODO 导出模板到excel
+     * @Date 10:51 2020/7/27
+     * @Param
+     **/
+    @GetMapping("exportFile")
+    public void exportFile(HttpServletResponse response) {
+        response.setContentType("application/x-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;fileName=yuangongbumen.xls");
+        Workbook workbook = teachinfoService.exportFile();
+        try {
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @return
+     * @Author zhangduo
+     * @Description //TODO 导入excel到数据库
+     * @Date 10:51 2020/7/27
+     * @Param
+     **/
+    @PostMapping("importExcelToMySql")
+    public ReturnJson importFile(@RequestParam("file") MultipartFile multipartFile, InputStream inputStream) {
+        List<BatchQuestions> studentinfoList = null;
+        try {
+            studentinfoList = teachinfoService.importFile(multipartFile.getInputStream());
+            Boolean boo = teachinfoService.saveBatch(studentinfoList);
+            return new ReturnJson(200, "导入成功", null);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ReturnJson(400, "导入失败", null);
+        }
+    }
+
+    /**
+     * excel导入后修改题目所属课件
+     * @return
+     */
+    @RequestMapping("updateQuestionOfTitle")
+    public Integer  updateQuestionOfTitle(Integer id){
+       return teachinfoService.updateQuestionOfTitle(id);
+    }
+
+
+    /**
+     *
+     * @return
+     */
+    @RequestMapping("deleteQuestion")
+    public Integer deleteQuestion(Integer id){
+      return   teachinfoService.deleteQuestion(id);
     }
 
 

@@ -1,6 +1,7 @@
 package com.hy.traffic;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -13,6 +14,7 @@ import javax.servlet.MultipartConfigElement;
 
 
 @SpringBootApplication
+@MapperScan("com.hy.traffic.*.mapper")
 public class TrafficManagerApplication extends SpringBootServletInitializer {
 
 
@@ -43,7 +45,7 @@ public class TrafficManagerApplication extends SpringBootServletInitializer {
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //单个文件最大
-        factory.setMaxFileSize(DataSize.parse("204800KB")); //限制200MB
+        factory.setMaxFileSize(DataSize.parse("512000KB")); //限制500MB
         /// 设置总上传数据总大小
         factory.setMaxRequestSize(DataSize.parse("1024000KB"));
         return factory.createMultipartConfig();

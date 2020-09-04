@@ -56,6 +56,7 @@ public class SaftyeduController {
 
     @Autowired
     private SaftyeduMapper saftyeduMapper;
+
     @Value("${img.vedioPath}")
     private String vedioPath;
 
@@ -126,15 +127,19 @@ public class SaftyeduController {
         resultData.setData(saftyeduList);
         return resultData;
     }
-
     //批量添加学员
     @CrossOrigin
     @RequestMapping("/batchAddStudent")
     public Integer batchAddStudent(Integer saftyid, Integer[] batchList) {
+        List<Integer> ids = saftyeduMapper.queryVedioIdBySaftyId(saftyid);
         try {
             for (int i = 0; i < batchList.length; i++) {
                 saftyeduService.batchAddStudent(saftyid, batchList[i]);
+                for (int j = 0; j <ids.size() ; j++) {
+                    saftyeduService.addLook(ids.get(j),batchList[i],saftyid);
+                }
             }
+
         } catch (Exception e) {
             return 0;
         }
@@ -156,8 +161,15 @@ public class SaftyeduController {
     @RequestMapping("/addSaftyEdu")
     public Integer addSaftyEdu(@RequestBody Saftyedutwo addEdu) {
         try {
-            //添加培训
-            saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore());
+            if(addEdu.getLearnType()==1){
+                //添加线上培训
+                saftyeduService.addSaftyEdu(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore());
+            }else if(addEdu.getLearnType()==3){
+                //添加线上+现场培训
+                saftyeduService.addSaftyEducopy(addEdu.getTheme(), addEdu.getStartTime(), addEdu.getEndTime(), addEdu.getManager(), addEdu.getTestPeople(), addEdu.getLearnType(), addEdu.getLearnTime(),addEdu.getPassscore(),addEdu.getAddress(),addEdu.getImage());
+            }
+
+
             //查询最大Id(培训id)
             Integer maxId = saftyeduService.selectMaxId();
             StringBuilder sr = new StringBuilder();
@@ -480,7 +492,17 @@ System.out.println(said);
         }
         return 1;
     }
-
+//结束培训
+    @CrossOrigin
+    @RequestMapping("/dianjijieshu")
+    public Integer dianjijieshu(Integer id) {
+        try {
+            saftyeduService.updateStatus(id,2);
+        } catch (Exception e) {
+            return 0;
+        }
+        return 1;
+    }
     //查看课程
     @CrossOrigin
     @RequestMapping("/classDetailList")

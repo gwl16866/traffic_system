@@ -3,6 +3,7 @@ package com.hy.traffic.studentInfo.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.util.StringUtil;
 import com.hy.traffic.studentInfo.entity.Answer;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.entity.Studentxiangqing;
@@ -175,10 +176,15 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
                     String key = titleRow.getCell(j).getStringCellValue();
                     String value = cell.getStringCellValue();
                     System.out.print(key+value);
+                    studentinfo.setJobType("客运");
+                    studentinfo.setJobName("驾驶员");
                     if(key.equals("学员姓名")){
                         studentinfo.setRealName(value);
                     }else if(key.equals("身份证号")){
                         studentinfo.setCardId(value);
+                        if(StringUtil.isNotEmpty(value) && value.length()>7){
+                            studentinfo.setPassword(value.substring(value.length()-7,value.length()-1));
+                        }
                     }else if(key.equals("联系电话")){
                         studentinfo.setLinkNum(value);
                     }else if(key.equals("车牌号码")){
@@ -219,7 +225,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         return  studentinfoMapper.selectStudentInfo(cardId,password);
     }
 
-    public void updatePassword(Integer id,String password){
+    public void updatePassword(String id,String password){
         Integer ids = mapper.queryIdByCarId(String.valueOf(id));
          studentinfoMapper.updatePassword(ids, password);
     }

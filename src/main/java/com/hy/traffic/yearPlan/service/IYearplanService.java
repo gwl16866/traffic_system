@@ -2,7 +2,9 @@ package com.hy.traffic.yearPlan.service;
 
 import com.hy.traffic.yearPlan.entity.Yearplan;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.poi.ss.usermodel.Workbook;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -25,5 +27,8 @@ public interface IYearplanService extends IService<Yearplan> {
     void del(String id);
     //添加计划
     void tianjiaYearplan(String title,String bodys);
+
+     Workbook exportFile();
+     List<Yearplan> importFile(InputStream inputStream);
 
 }

@@ -1,5 +1,6 @@
 package com.hy.traffic.studentInfo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.hy.traffic.studentInfo.entity.Info;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -89,7 +91,8 @@ public class StudentinfoController {
      * @Param [studentinfo]
      **/
     @RequestMapping("updateStudent")
-    public ReturnJson updateStudent(Studentinfo studentinfo) {
+    public ReturnJson updateStudent(@RequestBody Map map) {
+        Studentinfo studentinfo=JSONObject.parseObject(JSONObject.toJSONString(map.get("params")),Studentinfo.class);
         return studentinfoService.updateStudent(studentinfo);
     }
 
@@ -151,9 +154,14 @@ public class StudentinfoController {
 
         if (!StringUtils.isEmpty(studentinfo)) {
             if (!StringUtils.isEmpty(studentinfo.getId())) {
+                if(studentinfo.getStatus()==0 || studentinfo.getStatus()==2){
+                    info.setCode(400);
+                    info.setMessage("账号不可用");
+                    return info;
+                }
                 info.setCode(200);
                 info.setMessage("登录成功");
-                if (StringUtils.isEmpty(studentinfo.getHeadImg())) {
+                if (StringUtils.isEmpty(studentinfo.getHeadImg()) ||String.valueOf(studentinfo.getHeadImgStatus()).equals("6")) {
                     info.setMessage("暂无头像");
                 } else {
                     info.setMessage("头像已上传");
@@ -172,7 +180,7 @@ public class StudentinfoController {
 
     //修改密码
     @RequestMapping("updatePassword")
-    public Info updatePassword(Integer cardId, String password) {
+    public Info updatePassword(String cardId, String password) {
         Info info = new Info();
         try {
             studentinfoService.updatePassword(cardId, password);

@@ -59,4 +59,17 @@ public class DocumentController {
         return iDocumentService.queryById(id);
     }
 
+    @RequestMapping("deleteDoc")
+    public Integer deleteDoc(Integer id){
+      Integer i =iDocumentService.deleteDoc(id);
+      if(i>0){
+          return 1;
+      }else {
+          return 0;
+      }
+    }
+
+
+
+
 }

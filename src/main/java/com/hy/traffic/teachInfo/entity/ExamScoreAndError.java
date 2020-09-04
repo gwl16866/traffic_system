@@ -10,4 +10,5 @@ public class ExamScoreAndError implements Serializable {
 
     private Integer score;
     private List<ErrorQuestionDetails> errorQuestionDetails;
+    private Integer status;
 }
