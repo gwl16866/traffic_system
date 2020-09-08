@@ -63,7 +63,7 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
     @Select("select * from studentinfo where status=1 and headImgStatus=5 ")
     public List<Studentinfo> selectAllStu();
 
-    @Select("SELECT id,oneTitle FROM classdetails  WHERE vedio is NOT NULL")
+    @Select("SELECT id,oneTitle,vedioTime FROM classdetails  WHERE vedio is NOT NULL")
     public List<Tree> queryclassDetail();
 
     @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore})")

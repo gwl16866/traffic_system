@@ -6,4 +6,5 @@ import lombok.Data;
 public class Tree {
     private Integer id;
     private String oneTitle;
+    private Integer vedioTime;
 }

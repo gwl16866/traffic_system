@@ -345,8 +345,8 @@ public class TeachinfoController {
      * @return
      */
     @RequestMapping("updateTitle")
-    public Integer updateTitle(Integer id,String title){
-        Integer ok =teachinfoService.updateTitle(id,title);
+    public Integer updateTitle(Integer id,String title,String times){
+        Integer ok =teachinfoService.updateTitle(id,title,times);
         if (ok>0){
             return 1;
         }else {
@@ -429,6 +429,18 @@ public class TeachinfoController {
     }
 
 
+    @RequestMapping("batchAddJie")
+    public boolean batchAddJie(@RequestBody TwoObjs twoObjs){
+
+        boolean b = teachinfoService.batchAddJie(twoObjs);
+        if (b){
+            return true;
+        }else {
+            return false;
+        }
+
+
+    }
 
 
 

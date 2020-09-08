@@ -348,8 +348,8 @@ public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
      * @param title
      * @return
      */
-    @Update("update classdetails set onetitle=#{title} where id =#{id}")
-    public Integer updateTitle(Integer id,String title);
+    @Update("update classdetails set onetitle=#{title},vedioTime=#{times} where id =#{id}")
+    public Integer updateTitle(Integer id,String title,String times);
 
 
     /**
@@ -368,6 +368,21 @@ public interface TeachinfoMapper extends BaseMapper<BatchQuestions> {
     @Delete("delete from questionsmanager where id =#{id}")
     public Integer deleteQuestion(Integer id);
 
+    /**
+     * 根据大节查章
+     * @param id
+     * @return
+     */
+    @Select("SELECT parentid FROM classdetails WHERE id=#{id}")
+    public Integer selectZhangs(Integer id);
+
+    /**
+     * 根据大节查大纲
+     * @param id
+     * @return
+     */
+    @Select("SELECT classdetails FROM classdetails WHERE id=#{id}")
+    public Integer selectDagangs(Integer id);
 
 
 }

@@ -44,10 +44,11 @@ public interface ITeachinfoService extends IService<BatchQuestions> {
   public Integer updateVedioPlayTime(Integer trainId, String cardId, Integer vedioId,Integer playTime);
   public Integer deleteTitleById(Integer id);
   public Integer deleteLeftTitleById(Integer id);
-  public Integer updateTitle(Integer id,String title);
+  public Integer updateTitle(Integer id,String title,String times);
   public Integer leftUpdateTitle(Integer id,String title);
   public Workbook exportFile();
   public List<BatchQuestions> importFile(InputStream inputStream);
   public Integer  updateQuestionOfTitle(Integer id);
   public Integer  deleteQuestion(Integer id);
+  public boolean  batchAddJie(TwoObjs twoObjs);
 }

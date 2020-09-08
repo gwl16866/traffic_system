@@ -270,8 +270,8 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     }
 
     @Override
-    public Integer updateTitle(Integer id, String title) {
-        return mapper.updateTitle(id,title);
+    public Integer updateTitle(Integer id, String title,String times) {
+        return mapper.updateTitle(id,title,times);
     }
 
     @Override
@@ -344,6 +344,22 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public Integer deleteQuestion(Integer id) {
         return mapper.deleteQuestion(id);
+    }
+
+    @Override
+    public boolean batchAddJie(TwoObjs twoObjs) {
+        //Integer zhang = mapper.selectZhangs(twoObjs.getDj());
+        int p=0;
+        Integer gang = mapper.selectDagangs(twoObjs.getDj());
+        for (int i = 0; i < twoObjs.getAddList().size(); i++) {
+         p  =   mapper.addLession(twoObjs.getAddList().get(i).getXj(),twoObjs.getDj().toString(),twoObjs.getAddList().get(i).getVedio(),gang.toString());
+        }
+        if(p>0){
+            return true;
+        }else {
+            return false;
+        }
+
     }
 
     @Override

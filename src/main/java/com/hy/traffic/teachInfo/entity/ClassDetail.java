@@ -14,6 +14,7 @@ public class ClassDetail implements Serializable {
     private Integer classDetails;
     private Integer parentId;
     private List<ClassDetail> list;
+    private Integer vedioTime;
 
 
 }

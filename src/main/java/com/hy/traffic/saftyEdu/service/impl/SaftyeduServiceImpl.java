@@ -73,6 +73,7 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         saftyeduMapper.batchAddStudent(saftyid,studentid);
     }
 
+    @Override
     public void addLook(Integer classid,Integer studentid,Integer saftyeduid){
         saftyeduMapper.addLook(classid,studentid,saftyeduid);
     };

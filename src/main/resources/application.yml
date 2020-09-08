@@ -9,7 +9,7 @@ server:
 spring:
   datasource:
     username: root
-    password: a7891ba01f45e28a
+    password: root  #a7891ba01f45e28a
     url: jdbc:mysql://127.0.0.1:3306/traffic?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
 
