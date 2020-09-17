@@ -1,10 +1,17 @@
 package com.hy.traffic.teachInfo.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hy.traffic.classdetails.entity.Classdetails;
+import com.hy.traffic.classdetails.service.IClassdetailsService;
+import com.hy.traffic.lookvediodetails.entity.Lookvediodetails;
+import com.hy.traffic.lookvediodetails.service.ILookvediodetailsService;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
+import it.sauronsoftware.jave.Encoder;
+import it.sauronsoftware.jave.EncoderException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -14,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.RoundingMode;
@@ -22,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +45,15 @@ import java.util.stream.Collectors;
 public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQuestions> implements ITeachinfoService {
     @Autowired
     private TeachinfoMapper mapper;
+    @Autowired
+    ILookvediodetailsService iLookvediodetailsService;
+    @Autowired
+    IClassdetailsService iClassdetailsService;
     @Value("${img.vedioPath}")
     private String vedioPath;
+    @Value("${img.file}")
+    private String file;
+    static ConcurrentHashMap<String,Integer> concurrentHashMap=new ConcurrentHashMap();
 
     @Override
     public List<Teachinfo> queryAllTeachinfo() {
@@ -233,6 +249,35 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public Integer updateVedioStatus(Integer trainId, String cardId, Integer vedioId) {
         Integer id = mapper.queryIdByCarId(cardId);
+        //处理视频快进问题
+        String str = new StringBuilder().append(trainId).append(cardId).append(vedioId).toString();
+        if (!concurrentHashMap.containsKey(str)) {
+            return 0;
+        }
+        QueryWrapper queryWrapper=new QueryWrapper();
+        queryWrapper.eq("id",vedioId);
+        List<Classdetails> list=iClassdetailsService.list(queryWrapper);
+
+        if(list.size()==0){
+            return 0;
+        }
+        //获取视频信息
+        File source = new File(new StringBuilder().append(file).append("vedio/").append(list.get(0).getVedio()).toString());
+        Encoder encoder = new Encoder();
+        it.sauronsoftware.jave.MultimediaInfo m = null;
+        try {
+            m = encoder.getInfo(source);
+            long ls = m.getDuration()/1000;
+            if (ls-concurrentHashMap.get(str)  > 5) {
+                return 0;
+            }
+        } catch (EncoderException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
+        concurrentHashMap.remove(str);
+
         Integer ids = mapper.updateVedioStatus(trainId,id,vedioId);
         Integer allOk = mapper.updateComplete(id,trainId);
         Integer ok=0;
@@ -249,6 +294,32 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public Integer updateVedioPlayTime(Integer trainId, String cardId, Integer vedioId,Integer playTime) {
         Integer id = mapper.queryIdByCarId(cardId);
+        //处理视频快进问题
+        String str = new StringBuilder().append(trainId).append(cardId).append(vedioId).toString();
+
+        if (concurrentHashMap.containsKey(str)) {
+
+            if (playTime - concurrentHashMap.get(str) > 5) {
+                return 0;
+            }
+        } else {
+
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("studentid", id);
+            queryWrapper.eq("classid", vedioId);
+            queryWrapper.eq("saftyeduId", trainId);
+            List<Lookvediodetails> lookvediodetails = iLookvediodetailsService.list(queryWrapper);
+            if (lookvediodetails.size() == 0) {
+                return 0;
+            }
+            Lookvediodetails lookvediodetails1 = lookvediodetails.get(0);
+            if (playTime - lookvediodetails1.getPlayTime() > 5) {
+                return 0;
+            }
+
+        }
+        concurrentHashMap.put(str, playTime);
+
         Integer ids = mapper.updateVedioPlayTime(trainId,id,vedioId,playTime);
         return ids;
     }
