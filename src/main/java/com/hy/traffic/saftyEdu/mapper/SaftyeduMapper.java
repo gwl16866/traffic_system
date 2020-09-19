@@ -66,6 +66,9 @@ public interface SaftyeduMapper extends BaseMapper<Saftyedu> {
     @Select("SELECT id,oneTitle,vedioTime FROM classdetails  WHERE vedio is NOT NULL")
     public List<Tree> queryclassDetail();
 
+    @Select("SELECT COUNT(*) FROM questionsmanager WHERE oftitleid=#{id}")
+    public Integer querQuestionsCount(Integer id);
+
     @Insert("insert into saftyedu(theme,startTime,endTime,manager,testPeople,learnType,status,learnTime,passscore) values(#{theme},#{startTime},#{endTime},#{manager},#{testPeople},#{learnType},1,#{learnTime},#{passscore})")
     public void addSaftyEdu(String theme, String startTime, String endTime, String manager, String testPeople,Integer learnType , String learnTime,Integer passscore);
 

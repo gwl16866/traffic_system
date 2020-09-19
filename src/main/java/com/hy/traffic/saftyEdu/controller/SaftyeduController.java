@@ -64,7 +64,7 @@ public class SaftyeduController {
     @CrossOrigin
     @RequestMapping("/selectSaftyEdu")
     public ResultData selectSaftyEdu(Saftyedu saftyedu, Integer learnType) {
-        System.out.println(learnType + "=====================" + learnType);
+        //System.out.println(learnType + "=====================" + learnType);
 
         List<Saftyedu> saftyeduList = saftyeduService.selectSaftyEdu(learnType);
 

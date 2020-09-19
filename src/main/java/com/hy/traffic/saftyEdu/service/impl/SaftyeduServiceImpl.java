@@ -78,6 +78,7 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
         saftyeduMapper.addLook(classid,studentid,saftyeduid);
     };
 
+    @Override
     public void addLession(Integer id,Integer classid){
         saftyeduMapper.addLession(id,classid);
     }
@@ -89,7 +90,12 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
     @Override
     public List<Tree> queryclassDetail(){
-        return saftyeduMapper.queryclassDetail();
+        List<Tree> list = saftyeduMapper.queryclassDetail();
+        for (int i = 0; i < list.size(); i++) {
+           Integer a = saftyeduMapper.querQuestionsCount(list.get(i).getId());
+           list.get(i).setCount(a);
+        }
+        return list;
     };
 
     @Override
