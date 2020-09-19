@@ -10,8 +10,6 @@ import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
 import com.hy.traffic.teachInfo.service.ITeachinfoService;
-import it.sauronsoftware.jave.Encoder;
-import it.sauronsoftware.jave.EncoderException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -262,7 +260,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
             return 0;
         }
         //获取视频信息
-        File source = new File(new StringBuilder().append(file).append("vedio/").append(list.get(0).getVedio()).toString());
+        /*File source = new File(new StringBuilder().append(file).append("vedio/").append(list.get(0).getVedio()).toString());
         Encoder encoder = new Encoder();
         it.sauronsoftware.jave.MultimediaInfo m = null;
         try {
@@ -274,7 +272,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         } catch (EncoderException e) {
             e.printStackTrace();
             return 0;
-        }
+        }*/
 
         concurrentHashMap.remove(str);
 

@@ -72,28 +72,32 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
      **/
     @RequestMapping("insterStudent")
     public ReturnJson insterStudent(Studentinfo studentinfo){
-
-        DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if(!StringUtils.isEmpty(studentinfo.getBusCarefulTimes())){
-            studentinfo.setBusCarefulTime(LocalDateTime.parse(studentinfo.getBusCarefulTimes().replace("T"," "),dt));
+        if (!StringUtils.isEmpty(studentinfo) && !StringUtils.isEmpty(studentinfo.getCardId())) {
+            Integer stuCount = studentinfoMapper.queryByCardId(studentinfo);
+            if(stuCount>0){return new ReturnJson(200, "该身份证号已经存在", null);}
+            DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if (!StringUtils.isEmpty(studentinfo.getBusCarefulTimes())) {
+                studentinfo.setBusCarefulTime(LocalDateTime.parse(studentinfo.getBusCarefulTimes().replace("T", " "), dt));
+            }
+            if (!StringUtils.isEmpty(studentinfo.getDriverOverTimes())) {
+                studentinfo.setDriverOverTime(LocalDateTime.parse(studentinfo.getDriverOverTimes().replace("T", " "), dt));
+            }
+            if (!StringUtils.isEmpty(studentinfo.getInductions())) {
+                studentinfo.setInduction(LocalDateTime.parse(studentinfo.getInductions().replace("T", " "), dt));
+            }
+            studentinfo.setStatus(4);
+            studentinfo.setCompanyName("枣阳市光武石化运输有限公司");
+            studentinfo.setCreateTime(LocalDateTime.now());
+            studentinfo.setHeadImgStatus(4);
+            studentinfo.setPassword(studentinfo.getCardId().substring(12));
+            Integer boo = studentinfoMapper.insert(studentinfo);
+            if (boo < 0) {
+                return new ReturnJson(400, "添加失败", null);
+            }
+        }else{
+            return new ReturnJson(200, "信息未填写完整", null);
         }
-        if(!StringUtils.isEmpty(studentinfo.getDriverOverTimes())){
-            studentinfo.setDriverOverTime(LocalDateTime.parse(studentinfo.getDriverOverTimes().replace("T"," "),dt));
-        }
-        if(!StringUtils.isEmpty(studentinfo.getInductions())){
-            studentinfo.setInduction(LocalDateTime.parse(studentinfo.getInductions().replace("T"," "),dt));
-        }
-        studentinfo.setStatus(4);
-        studentinfo.setCompanyName("枣阳市光武石化运输有限公司");
-        studentinfo.setCreateTime(LocalDateTime.now());
-        studentinfo.setHeadImgStatus(4);
-        studentinfo.setPassword(studentinfo.getCardId().substring(12));
-        Integer boo = studentinfoMapper.insert(studentinfo);
-        if( boo>0 ){
-            return new ReturnJson(200,"添加成功",null);
-        }else {
-            return new ReturnJson(400,"添加失败",null);
-        }
+        return new ReturnJson(200, "添加成功", null);
     }
 
     /**
@@ -116,26 +120,52 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
      * @return com.hy.traffic.studentInfo.utils.ReturnJson
      **/
     public ReturnJson updateStudent(Studentinfo studentinfo){
-        DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        if(!StringUtils.isEmpty(studentinfo.getCreateTimes())){
-            studentinfo.setCreateTime(LocalDateTime.parse(studentinfo.getCreateTimes().replace("T"," "),dt));
-        }
-        if(!StringUtils.isEmpty(studentinfo.getBusCarefulTimes())){
-            studentinfo.setBusCarefulTime(LocalDateTime.parse(studentinfo.getBusCarefulTimes().replace("T"," "),dt));
-        }
-        if(!StringUtils.isEmpty(studentinfo.getDriverOverTimes())){
-            studentinfo.setDriverOverTime(LocalDateTime.parse(studentinfo.getDriverOverTimes().replace("T"," "),dt));
-        }
-        if(!StringUtils.isEmpty(studentinfo.getInductions())){
-            studentinfo.setInduction(LocalDateTime.parse(studentinfo.getInductions().replace("T"," "),dt));
-        }
-        int boo = studentinfoMapper.updateById(studentinfo);
-        if( boo < 1 ){
-            return new ReturnJson(400,"修改失败",null);
-
+        if(!StringUtils.isEmpty(studentinfo)){
+            if(!studentinfo.getCardId().equals(studentinfo.getStudentOCardId())){
+                System.out.println(studentinfo.getCardId().equals(studentinfo.getStudentOCardId())+"==================");
+                Integer stuCount = studentinfoMapper.queryByCardId(studentinfo);
+                if(stuCount>0){
+                    return new ReturnJson(400,"该身份证号已经存在",null);
+                }
+            }
+            DateTimeFormatter dt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            if(!StringUtils.isEmpty(studentinfo.getCreateTimes())){
+                studentinfo.setCreateTime(LocalDateTime.parse(studentinfo.getCreateTimes().replace("T"," "),dt));
+            }
+            if(!StringUtils.isEmpty(studentinfo.getBusCarefulTimes())){
+                studentinfo.setBusCarefulTime(LocalDateTime.parse(studentinfo.getBusCarefulTimes().replace("T"," "),dt));
+            }
+            if(!StringUtils.isEmpty(studentinfo.getDriverOverTimes())){
+                studentinfo.setDriverOverTime(LocalDateTime.parse(studentinfo.getDriverOverTimes().replace("T"," "),dt));
+            }
+            if(!StringUtils.isEmpty(studentinfo.getInductions())){
+                studentinfo.setInduction(LocalDateTime.parse(studentinfo.getInductions().replace("T"," "),dt));
+            }
+            int boo = studentinfoMapper.updateById(studentinfo);
+            if( boo < 1 ){
+                return new ReturnJson(400,"修改失败",null);
+            }
+        }else{
+            return new ReturnJson(200, "信息未填写完整", null);
         }
         return new ReturnJson(200,"修改成功",null);
     }
+    /**
+     * @Author zhangduo
+     * @Description //TODO 审核学员信息
+     * @Date 13:13 2020/7/25
+     * @Param [studentinfo]
+     * @return com.hy.traffic.studentInfo.utils.ReturnJson
+     **/
+    public ReturnJson shenHeStudent(Studentinfo studentinfo){
+        int boo = studentinfoMapper.updateById(studentinfo);
+        if( boo == 1 ){
+            return new ReturnJson(200,"审核成功",null);
+        }else {
+            return new ReturnJson(400,"审核失败",null);
+        }
+    }
+
 
     /**
      * @Author zhangduo
@@ -160,7 +190,7 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
      * @Param
      * @return
      **/
-    public List<Studentinfo> importFile(InputStream inputStream){
+    public ReturnJson importFile(InputStream inputStream){
         List<Studentinfo> mapList = new ArrayList<>();
         try {
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -181,6 +211,10 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
                     if(key.equals("学员姓名")){
                         studentinfo.setRealName(value);
                     }else if(key.equals("身份证号")){
+                        Integer stuCount = studentinfoMapper.queryByCardIdstu(value);
+                        if(stuCount>0){
+                            return new ReturnJson(400,"批量导入有身份证号已经存在",null);
+                        }
                         studentinfo.setCardId(value);
                         if(StringUtil.isNotEmpty(value) && value.length()>7){
                             studentinfo.setPassword(value.substring(value.length()-7,value.length()-1));
@@ -201,10 +235,12 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
                 }
                 mapList.add(studentinfo);
             }
+            Boolean boo = new StudentinfoServiceImpl().saveBatch(mapList);
+            if(!boo){return new ReturnJson(200, "导入失败", null);}
         } catch (IOException | InvalidFormatException e) {
             e.printStackTrace();
         }
-        return mapList;
+        return new ReturnJson(200, "导入成功", null);
     }
 
     public Workbook exportFile(){

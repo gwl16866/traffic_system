@@ -98,6 +98,19 @@ public class StudentinfoController {
 
     /**
      * @return com.hy.traffic.studentInfo.utils.ReturnJson
+     *      * @Author zhangduo
+     *      * @Description //TODO 审核某一个学员信息
+     *      * @Date 12:40 2020/7/25
+     *      * @Param [studentinfo]
+     */
+    @RequestMapping("shenHeStudent")
+    public ReturnJson shenHeStudent(@RequestBody Map map) {
+        Studentinfo studentinfo=JSONObject.parseObject(JSONObject.toJSONString(map.get("params")),Studentinfo.class);
+        return studentinfoService.shenHeStudent(studentinfo);
+    }
+
+    /**
+     * @return com.hy.traffic.studentInfo.utils.ReturnJson
      * @Author zhangduo
      * @Description //TODO 修改学员状态信息
      * @Date 12:40 2020/7/25
@@ -117,13 +130,9 @@ public class StudentinfoController {
      **/
     @PostMapping("importExcelToMySql")
     public ReturnJson importFile(@RequestParam("file") MultipartFile multipartFile, InputStream inputStream) {
-        List<Studentinfo> studentinfoList = null;
         try {
-            studentinfoList = studentinfoService.importFile(multipartFile.getInputStream());
-            Boolean boo = studentinfoService.saveBatch(studentinfoList);
-            return new ReturnJson(200, "导入成功", null);
+            return studentinfoService.importFile(multipartFile.getInputStream());
         } catch (IOException e) {
-            e.printStackTrace();
             return new ReturnJson(400, "导入失败", null);
         }
     }

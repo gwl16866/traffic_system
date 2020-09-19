@@ -22,6 +22,13 @@ import java.util.List;
 @Mapper
 public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
 
+    //添加学员信息之前通过身份证查询当前学员是否存在
+    @Select("select count(id) from studentinfo where cardid=#{cardId}")
+    Integer queryByCardId(Studentinfo studentinfo);
+
+    @Select("select count(id) from studentinfo where cardid=#{cardId}")
+    Integer queryByCardIdstu(String cardID);
+
     //根据said查数据
     @Select("select * from studentinfo where id in(select stuid from saftydustudentinfo where said= #{value})")
     List<Studentinfo> queryStudentinfoByid(Integer said);

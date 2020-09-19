@@ -115,4 +115,7 @@ public class Studentinfo implements Serializable {
     @TableField(exist = false)
     private Integer saftyid;
 
+    @TableField(exist = false)
+    private String studentOCardId;
+
 }

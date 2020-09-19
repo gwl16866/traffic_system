@@ -3,6 +3,8 @@ package com.hy.traffic.saftyEdu.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hy.traffic.managerMan.entity.Manager;
+import com.hy.traffic.managerMan.service.impl.ManagerServiceImpl;
 import com.hy.traffic.saftyEdu.entity.*;
 import com.hy.traffic.saftyEdu.mapper.SaftyeduMapper;
 import com.hy.traffic.saftyEdu.service.ISaftyeduService;
@@ -37,6 +39,8 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
     @Autowired
     StudentaccmqMapper studentaccmqMapper;
 
+    @Autowired
+    private ManagerServiceImpl managerService;
 
     @Override
     public List<Saftyedu> selectSaftyEdu(Integer learnType) {
@@ -85,7 +89,19 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
 
     @Override
     public List<Studentinfo> selectAllStu() {
-       return saftyeduMapper.selectAllStu();
+
+       List<Studentinfo> list = saftyeduMapper.selectAllStu();
+        List<Manager> mans = managerService.selectList();
+        for (int i = 0; i < mans.size(); i++) {
+            Studentinfo s=new Studentinfo();
+            s.setId(mans.get(i).getId());
+            s.setHeadImg(null);
+            s.setRealName(mans.get(i).getName());
+            s.setCardId(mans.get(i).getCardId());
+            s.setJobName(mans.get(i).getJob());
+            list.add(s);
+        }
+        return list;
     }
 
     @Override

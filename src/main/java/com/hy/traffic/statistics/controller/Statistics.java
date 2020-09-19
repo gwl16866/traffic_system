@@ -123,7 +123,7 @@ public class Statistics {
 
 
         NData nData=new NData();
-        nData.setName("枣阳市光武石化运输有限公式");
+        nData.setName("枣阳市光武石化运输有限公司");
         nData.setJhs(jhs.size());
         nData.setCount(count);
         nData.setOkcount(okcount);
