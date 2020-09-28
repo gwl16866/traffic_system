@@ -216,8 +216,8 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
                             return new ReturnJson(400,"批量导入有身份证号已经存在",null);
                         }
                         studentinfo.setCardId(value);
-                        if(StringUtil.isNotEmpty(value) && value.length()>7){
-                            studentinfo.setPassword(value.substring(value.length()-7,value.length()-1));
+                        if(StringUtil.isNotEmpty(value) && value.length()>12){
+                            studentinfo.setPassword(value.substring(12));
                         }
                     }else if(key.equals("联系电话")){
                         studentinfo.setLinkNum(value);
@@ -253,6 +253,14 @@ public class StudentinfoServiceImpl extends ServiceImpl<StudentinfoMapper, Stude
         row0.createCell(3).setCellValue("车牌号码");
         row0.createCell(4).setCellValue("联系地址");
         row0.createCell(5).setCellValue("岗位名称");
+
+        Row row1 = workbookSheet.createRow(1);
+        row1.createCell(0).setCellValue("张三");
+        row1.createCell(1).setCellValue("485748596214563258");
+        row1.createCell(2).setCellValue("15666666666");
+        row1.createCell(3).setCellValue("鄂F55555");
+        row1.createCell(4).setCellValue("湖北");
+        row1.createCell(5).setCellValue("危货驾驶员");
         return workbook;
     }
 

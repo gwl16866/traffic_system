@@ -284,7 +284,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         if(allOk == 0){
          ok =  mapper.updateEduStatus(id,trainId);
         }
-        if(ok >0 && ids >0){
+        if(ids >0){
             return 1;
         }else{
             return 0;
