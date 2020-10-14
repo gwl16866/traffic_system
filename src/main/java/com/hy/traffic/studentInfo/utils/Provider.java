@@ -13,7 +13,7 @@ import org.springframework.util.StringUtils;
  */
 public class Provider {
     public String queryAllStudentInFo(@Param("studentinfo") Studentinfo studentinfo){
-        StringBuffer stringBuffer = new StringBuffer("SELECT id,headImg,companyName,realname,cardId,linkNum,busNum,jobName,createTime,STATUS,headImgStatus FROM studentinfo WHERE 1=1 ");
+        StringBuffer stringBuffer = new StringBuffer("SELECT id,headImg,companyName,realname,cardId,linkNum,busNum,jobName,createTime,STATUS,headImgStatus FROM studentinfo WHERE 1=1 and type='0'");
         if (!StringUtils.isEmpty(studentinfo)){
             if(!StringUtils.isEmpty(studentinfo.getRealName())){
                 stringBuffer.append(" and realname like '%"+studentinfo.getRealName()+"%'");

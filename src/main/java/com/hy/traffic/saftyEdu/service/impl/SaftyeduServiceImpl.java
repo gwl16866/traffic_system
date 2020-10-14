@@ -19,6 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -91,17 +92,19 @@ public class SaftyeduServiceImpl extends ServiceImpl<SaftyeduMapper, Saftyedu> i
     public List<Studentinfo> selectAllStu() {
 
        List<Studentinfo> list = saftyeduMapper.selectAllStu();
-        List<Manager> mans = managerService.selectList();
-        for (int i = 0; i < mans.size(); i++) {
-            Studentinfo s=new Studentinfo();
-            s.setId(mans.get(i).getId());
-            s.setHeadImg(null);
-            s.setRealName(mans.get(i).getName());
-            s.setCardId(mans.get(i).getCardId());
-            s.setJobName(mans.get(i).getJob());
-            list.add(s);
-        }
-        return list;
+        List<Studentinfo> list1=list.stream().filter(e->e.getType().equals("0")).collect(Collectors.toList());
+        list1.addAll(list.stream().filter(e->e.getType().equals("1")).collect(Collectors.toList()));
+//        List<Manager> mans = managerService.selectList();
+//        for (int i = 0; i < mans.size(); i++) {
+//            Studentinfo s=new Studentinfo();
+//            s.setId(mans.get(i).getId());
+//            s.setHeadImg(null);
+//            s.setRealName(mans.get(i).getName());
+//            s.setCardId(mans.get(i).getCardId());
+//            s.setJobName(mans.get(i).getJob());
+//            list.add(s);
+//        }
+        return list1;
     }
 
     @Override

@@ -6,6 +6,8 @@ import com.hy.traffic.classdetails.entity.Classdetails;
 import com.hy.traffic.classdetails.service.IClassdetailsService;
 import com.hy.traffic.lookvediodetails.entity.Lookvediodetails;
 import com.hy.traffic.lookvediodetails.service.ILookvediodetailsService;
+import com.hy.traffic.managerMan.entity.Manager;
+import com.hy.traffic.managerMan.service.IManagerService;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.teachInfo.entity.*;
 import com.hy.traffic.teachInfo.mapper.TeachinfoMapper;
@@ -49,6 +51,8 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     ILookvediodetailsService iLookvediodetailsService;
     @Autowired
     IClassdetailsService iClassdetailsService;
+    @Autowired
+    IManagerService iManagerService;
     @Value("${img.vedioPath}")
     private String vedioPath;
     @Value("${img.file}")
@@ -195,6 +199,15 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
        //查询身份证
        Integer id = mapper.queryIdByCarId(cardId);
 
+        if (id == null || id == 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("cardId", cardId);
+            List<Manager> managers = iManagerService.list(queryWrapper);
+            if (managers.size() > 0) {
+                id = managers.get(0).getId();
+            }
+        }
+
         List<OnlineTrain> list = new ArrayList<>();
 
         for (int i = 0; i < saftyInfos.size(); i++) {
@@ -220,6 +233,14 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public List<TrainVedio> queryVedioByTrainId(Integer trainId,String cardId) {
         Integer id = mapper.queryIdByCarId(cardId);
+        if (id == null || id == 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("cardId", cardId);
+            List<Manager> managers = iManagerService.list(queryWrapper);
+            if (managers.size() > 0) {
+                id = managers.get(0).getId();
+            }
+        }
         List<TrainVedio> list=mapper.queryVedioByTrainId(trainId,id);
         list=list.stream().map(e->{
             e.setVedio(vedioPath+e.getVedio());
@@ -232,6 +253,14 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     public List<TrainRecord> queryTrainRecord(String carId,String year) {
         //学生id
         Integer id =mapper.queryIdByCarId(carId);
+        if (id == null || id == 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("cardId", carId);
+            List<Manager> managers = iManagerService.list(queryWrapper);
+            if (managers.size() > 0) {
+                id = managers.get(0).getId();
+            }
+        }
         //培训列表
         List<TrainRecord> recordList =  mapper.queryTrainRecord(id,year,new Date());
         for (int i = 0; i < recordList.size(); i++) {
@@ -249,6 +278,15 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public Integer updateVedioStatus(Integer trainId, String cardId, Integer vedioId) {
         Integer id = mapper.queryIdByCarId(cardId);
+
+        if (id == null || id == 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("cardId", cardId);
+            List<Manager> managers = iManagerService.list(queryWrapper);
+            if (managers.size() > 0) {
+                id = managers.get(0).getId();
+            }
+        }
         //处理视频快进问题
         String str = new StringBuilder().append(trainId).append(cardId).append(vedioId).toString();
         if (!concurrentHashMap.containsKey(str)) {
@@ -294,6 +332,14 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
     @Override
     public Integer updateVedioPlayTime(Integer trainId, String cardId, Integer vedioId,Integer playTime) {
         Integer id = mapper.queryIdByCarId(cardId);
+        if (id == null || id == 0) {
+            QueryWrapper queryWrapper = new QueryWrapper();
+            queryWrapper.eq("cardId", cardId);
+            List<Manager> managers = iManagerService.list(queryWrapper);
+            if (managers.size() > 0) {
+                id = managers.get(0).getId();
+            }
+        }
         //处理视频快进问题
         String str = new StringBuilder().append(trainId).append(cardId).append(vedioId).toString();
 
@@ -483,8 +529,10 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         // 根据培训id查询本次培训过关分数
         Integer sc = mapper.queryScore(object.getReceiveScoreRecord().getSaftyId());
         Integer status=1;
+        String st="未通过";
         if(s>=sc){
             status =2;
+             st="已通过";
         }
         obj.setStatus(status);
         //插入记录  再插入详细
@@ -500,7 +548,7 @@ public class TeachinfoServiceImpl extends ServiceImpl<TeachinfoMapper, BatchQues
         }
 
         if(re>0 && re2>0){
-            obj.setScore(s);
+            obj.setScore(s+"      （"+st+"）");
             obj.setErrorQuestionDetails(errorDetails);
             return obj;
         }else {

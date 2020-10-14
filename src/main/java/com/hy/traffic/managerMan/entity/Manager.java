@@ -38,6 +38,8 @@ public class Manager implements Serializable {
     @TableField(value = "job")
     private String job;
 
+    @TableField(exist = false)
+    private String headImg;
 
 
 

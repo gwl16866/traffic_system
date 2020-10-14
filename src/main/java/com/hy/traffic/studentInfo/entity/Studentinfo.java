@@ -118,4 +118,6 @@ public class Studentinfo implements Serializable {
     @TableField(exist = false)
     private String studentOCardId;
 
+    @TableField("type")
+    private String type;
 }

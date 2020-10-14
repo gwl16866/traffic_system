@@ -6,15 +6,21 @@ import com.hy.traffic.studentInfo.entity.Answer;
 import com.hy.traffic.studentInfo.entity.Studentxiangqing;
 import com.hy.traffic.studentInfo.service.impl.StudentinfoServiceImpl;
 import com.hy.traffic.studentaccmq.service.impI.StudentaccmqServiceImpI;
+import org.apache.commons.compress.utils.Lists;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/statistics/statisticsinfo")
@@ -169,7 +175,7 @@ public class Statistics {
         System.out.println("查询条件"+realName);
 
         List<Studentxiangqing>  list=studentinfoService.studentxiangqing2(id,aaa,realName);
-        if(radio==1){
+        if(radio==1 || radio==4){
             Integer [] in=studentinfoService.stuid(id);
             Integer [] in2= new Integer[list.size()];
 
@@ -300,16 +306,94 @@ public class Statistics {
                 studentxiangqing.setPlaytime(totalTimeStr);
             }
 
-      }else if(radio==4){
+      }
+//      else if(radio==4){
+//
+//            for (int i = 0; i < list.size(); i++) {
+//                if(list.get(i).getAstatus()!=1){
+//                    list.remove(i);
+//                }
+//            }
+//
+//            for (Studentxiangqing studentxiangqing : list) {
+//                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+//                String totalTimeStr = "";
+//
+//                if(totalTime>=60 && totalTime<=3600){
+//                    totalTimeStr = totalTime/60 + "分" + (totalTime%60) + "秒" ;
+//                }else if(totalTime>3600){
+//                    totalTimeStr = totalTime/3600 + "时" + (totalTime%3600)/60 + "分" + (totalTime%3600)%60 + "秒";
+//                }
+//                else if(totalTime>=0&& totalTime<60){
+//                    totalTimeStr = totalTime+ "秒" ;
+//                }
+//                studentxiangqing.setPlaytime(totalTimeStr);
+//            }
+//
+//        }
 
-            for (int i = 0; i < list.size(); i++) {
-                if(list.get(i).getAstatus()!=1){
-                    list.remove(i);
+
+      Map<String,Studentxiangqing> listMap=list.stream().sorted(Comparator.comparing(Studentxiangqing::getCreateTime)).collect(Collectors.toMap(a->a.getCardId(), b->b,(old,news)->{
+          if(old.getScore()>news.getScore()){
+              return old;
+          }
+          return news;
+      }));
+      list=new ArrayList(listMap.values());
+      if(radio==4){
+          list=list.stream().filter(a->String.valueOf(a.getAstatus()).equals("1")).collect(Collectors.toList());
+      }
+
+        return list;
+  }
+
+    @ResponseBody
+    @RequestMapping("/execls")
+    public void execls(Integer id, String aaa, String realName, Integer radio, HttpServletResponse response){
+        System.out.println("牛"+radio);
+        System.out.println(id);
+        System.out.println("按什么查询"+aaa);
+        System.out.println("查询条件"+realName);
+
+        List<Studentxiangqing>  list=studentinfoService.studentxiangqing2(id,aaa,realName);
+            Integer [] in=studentinfoService.stuid(id);
+            Integer [] in2= new Integer[list.size()];
+
+
+            if(in.length>0){
+                for (int i = 0; i < list.size(); i++) {
+                    in2[i]=list.get(i).getId();
+                }
+            }
+
+            List<Integer>  list1 = new ArrayList();
+            List<Integer>  list2 = new ArrayList();
+
+            //调用Arrays.asList将数组转换成列表
+            List<Integer> aList = Arrays.asList(in);
+            List<Integer> bList = Arrays.asList(in2);
+//接下去是重点。将上面两个List转换成ArrayList
+            List<Integer> acList = new ArrayList<Integer>(aList);
+            List<Integer> bcList = new ArrayList<Integer>(bList);
+//遍历去除重复
+            for(Integer i : bcList){
+                if(acList.contains(i)){
+                    acList.remove(i);
+                }
+            }
+
+
+
+            for (Integer integer : acList) {
+                Studentxiangqing studentxiangqing=studentinfoService.stuentmq(integer,aaa,realName);
+                if(studentxiangqing!=null){
+                    list.add(studentxiangqing);
                 }
             }
 
             for (Studentxiangqing studentxiangqing : list) {
-                int totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
+                System.out.println("========"+studentxiangqing.getId());
+                Integer totalTime =studentinfoService.querySumPlayTime(id,studentxiangqing.getId());
                 String totalTimeStr = "";
 
                 if(totalTime>=60 && totalTime<=3600){
@@ -323,13 +407,41 @@ public class Statistics {
                 studentxiangqing.setPlaytime(totalTimeStr);
             }
 
+        Map<String,Studentxiangqing> listMap=list.stream().sorted(Comparator.comparing(Studentxiangqing::getCreateTime)).collect(Collectors.toMap(a->a.getCardId(), b->b,(old,news)->{
+            if(old.getScore()>news.getScore()){
+                return old;
+            }
+            return news;
+        }));
+        list=new ArrayList(listMap.values());
+        response.setContentType("application/x-excel;charset=utf-8");
+        response.setHeader("Content-Disposition", "attachment;fileName=score.xls");
+
+        Workbook workbook = new HSSFWorkbook();
+        Sheet workbookSheet = workbook.createSheet("年计划");
+
+        Row row0 = workbookSheet.createRow(0);
+        row0.createCell(0).setCellValue("姓名");
+        row0.createCell(1).setCellValue("身份证号");
+        row0.createCell(2).setCellValue("岗位");
+        row0.createCell(3).setCellValue("考试状态");
+        row0.createCell(4).setCellValue("考试分数");
+        for (int i = 0; i < list.size(); i++) {
+            row0 = workbookSheet.createRow(i+1);
+            row0.createCell(0).setCellValue(list.get(i).getRealName());
+            row0.createCell(1).setCellValue(list.get(i).getCardId());
+            row0.createCell(2).setCellValue(list.get(i).getJobName());
+            row0.createCell(3).setCellValue(list.get(i).getAstatus()==null ? "未开始": (list.get(i).getAstatus()==2 ? "培训合格":"未合格"));
+            row0.createCell(4).setCellValue(list.get(i).getScore()==null ? 0: list.get(i).getScore());
         }
 
 
-
-        return list;
-  }
-
+        try {
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
   @ResponseBody
   @RequestMapping("/corexiangqing")

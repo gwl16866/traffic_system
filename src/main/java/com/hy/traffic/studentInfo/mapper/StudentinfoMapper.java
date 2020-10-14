@@ -50,7 +50,7 @@ public interface StudentinfoMapper extends BaseMapper<Studentinfo> {
     public int updateOneStudent(Integer id, Integer status);
 
     //登录
-    @Select("select * from studentinfo where cardId=#{cardId} and password=#{password}")
+    @Select("select * from studentinfo where cardId=#{cardId} and password=#{password} and status!=2")
     public Studentinfo selectStudentInfo(String cardId, String password);
 
     @Update("update studentinfo set password=#{password} where id=#{id}")

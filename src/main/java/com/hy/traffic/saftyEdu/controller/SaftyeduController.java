@@ -1,5 +1,6 @@
 package com.hy.traffic.saftyEdu.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hy.traffic.saftyEdu.ResultData;

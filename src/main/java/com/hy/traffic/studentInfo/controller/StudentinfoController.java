@@ -3,6 +3,8 @@ package com.hy.traffic.studentInfo.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.hy.traffic.managerMan.entity.Manager;
+import com.hy.traffic.managerMan.service.IManagerService;
 import com.hy.traffic.studentInfo.entity.Info;
 import com.hy.traffic.studentInfo.entity.Studentinfo;
 import com.hy.traffic.studentInfo.service.IStudentinfoService;
@@ -41,6 +43,8 @@ public class StudentinfoController {
 
     @Autowired
     IStudentinfoService iStudentinfoService;
+    @Autowired
+    IManagerService iManagerService;
 
     @Value("${img.filePath}")
     String imgFilePath;
@@ -181,6 +185,14 @@ public class StudentinfoController {
                 return info;
             }
         }else {
+//            QueryWrapper queryWrapper=new QueryWrapper();
+//            queryWrapper.eq("cardId",cardId);
+//            List<Manager> managers=iManagerService.list(queryWrapper);
+//            if(managers.size()>0 && password.equals(cardId.substring(12))){
+//                info.setCode(200);
+//                info.setMessage("头像已上传");
+//                return info;
+//            }
             info.setCode(400);
             info.setMessage("账号或密码错误");
         }
